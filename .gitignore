@@ -1,1 +1,4 @@
 trivago_venv/
+build/
+output/
+*.log

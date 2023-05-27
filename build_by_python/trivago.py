@@ -308,6 +308,8 @@ def scraping(
 
             nowsheet["O" + str(i)] = real_currency
 
+            # logger.info(hotelname)
+
             n = n + 1
         except:
             i = i - 1
