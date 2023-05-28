@@ -9,7 +9,7 @@
 1. 搜索结果会保存在output里面。
 
 # 使用方法2
-1. 解压压缩包，双击执行`trivago.exe`
+1. 下载解压 res\exe.win-amd64-3.10.rar 压缩包，双击执行`trivago.exe`
 
 # 文件
 |  文件名   | 说明     |
