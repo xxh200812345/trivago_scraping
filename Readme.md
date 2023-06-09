@@ -25,3 +25,7 @@
 # 环境搭建：
 
 关于执行的学习录像也有提供，请看
+
+# 生成trivago.exe
+
+    python setup.py build
