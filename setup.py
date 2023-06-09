@@ -9,7 +9,7 @@ exec = Executable(
 # 设置打包的参数
 setup(
     name='trivago_scraping',
-    version='1.0',
+    version='1.1',
     description='Description of your app',
     executables=[exec]
 )

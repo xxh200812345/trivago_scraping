@@ -154,6 +154,7 @@ def bot_check_wait(sleeptime=1):
 
 def check_next_btn():
     try:
+        to_bottom()
         driver.find_element(By.XPATH, "//button[@data-testid='next-result-page']")
         return True
     except:
@@ -169,6 +170,7 @@ def element_click(element):
 
 
 def click_next_btn():
+    to_bottom()
     element_click(
         driver.find_element(By.XPATH, "//button[@data-testid='next-result-page']")
     )
@@ -215,6 +217,15 @@ def inittilt(nowsheet):
     nowsheet.column_dimensions["O"].width = 10
 
 
+def to_bottom():
+    '''
+    网页拉到最下面
+    '''
+    # 将滚动条移动到页面的最底部
+    driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+    time.sleep(3)
+
+
 def scraping(
     search_cityname,
     search_checkin,
@@ -228,12 +239,8 @@ def scraping(
     """
     global nowsheet
 
-    # 将滚动条移动到页面的最底部
-    driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-    time.sleep(2)
-    driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-    time.sleep(2)
-    driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+
+    to_bottom()
 
     i = nowsheet_i
 
