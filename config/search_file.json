@@ -1,0 +1,912 @@
+{
+                    "id": "100/9011406",
+                    "nsid": {
+                        "id": 9011406,
+                        "ns": 100,
+                        "__typename": "Nsid"
+                    },
+                    "typeId": 2,
+                    "typeLabel": "酒店",
+                    "accommodationDetails": {
+                        "accommodationCategory": "HOTEL",
+                        "translatedName": {
+                            "value": "Legoland Japan Hotel",
+                            "__typename": "Translation"
+                        },
+                        "constructionYear": null,
+                        "destinationHierarchy": [
+                            {
+                                "nsid": {
+                                    "ns": 200,
+                                    "id": 69847,
+                                    "__typename": "Nsid"
+                                },
+                                "typeObject": {
+                                    "nsid": {
+                                        "ns": 201,
+                                        "id": 5,
+                                        "__typename": "Nsid"
+                                    },
+                                    "__typename": "TranslatedConcept"
+                                },
+                                "translatedName": {
+                                    "value": "名古屋",
+                                    "__typename": "Translation"
+                                },
+                                "englishName": {
+                                    "value": "Nagoya",
+                                    "__typename": "Translation"
+                                },
+                                "__typename": "Destination"
+                            },
+                            {
+                                "nsid": {
+                                    "ns": 200,
+                                    "id": 69757,
+                                    "__typename": "Nsid"
+                                },
+                                "typeObject": {
+                                    "nsid": {
+                                        "ns": 201,
+                                        "id": 4,
+                                        "__typename": "Nsid"
+                                    },
+                                    "__typename": "TranslatedConcept"
+                                },
+                                "translatedName": {
+                                    "value": "愛知縣",
+                                    "__typename": "Translation"
+                                },
+                                "englishName": {
+                                    "value": "Präfektur Aichi",
+                                    "__typename": "Translation"
+                                },
+                                "__typename": "Destination"
+                            },
+                            {
+                                "nsid": {
+                                    "ns": 200,
+                                    "id": 69749,
+                                    "__typename": "Nsid"
+                                },
+                                "typeObject": {
+                                    "nsid": {
+                                        "ns": 201,
+                                        "id": 3,
+                                        "__typename": "Nsid"
+                                    },
+                                    "__typename": "TranslatedConcept"
+                                },
+                                "translatedName": {
+                                    "value": "中部及北陸",
+                                    "__typename": "Translation"
+                                },
+                                "englishName": {
+                                    "value": "Chubu und Hokuriku",
+                                    "__typename": "Translation"
+                                },
+                                "__typename": "Destination"
+                            },
+                            {
+                                "nsid": {
+                                    "ns": 200,
+                                    "id": 85,
+                                    "__typename": "Nsid"
+                                },
+                                "typeObject": {
+                                    "nsid": {
+                                        "ns": 201,
+                                        "id": 2,
+                                        "__typename": "Nsid"
+                                    },
+                                    "__typename": "TranslatedConcept"
+                                },
+                                "translatedName": {
+                                    "value": "日本",
+                                    "__typename": "Translation"
+                                },
+                                "englishName": {
+                                    "value": "Japan",
+                                    "__typename": "Translation"
+                                },
+                                "__typename": "Destination"
+                            },
+                            {
+                                "nsid": {
+                                    "ns": 200,
+                                    "id": 2,
+                                    "__typename": "Nsid"
+                                },
+                                "typeObject": {
+                                    "nsid": {
+                                        "ns": 201,
+                                        "id": 1,
+                                        "__typename": "Nsid"
+                                    },
+                                    "__typename": "TranslatedConcept"
+                                },
+                                "translatedName": {
+                                    "value": "亞洲",
+                                    "__typename": "Translation"
+                                },
+                                "englishName": {
+                                    "value": "Asia",
+                                    "__typename": "Translation"
+                                },
+                                "__typename": "Destination"
+                            }
+                        ],
+                        "isVRBOExclusive": false,
+                        "unitDetails": null,
+                        "bookingExclusiveRating": null,
+                        "vrboExclusiveRating": null,
+                        "country": {
+                            "translatedName": {
+                                "value": "日本",
+                                "__typename": "Translation"
+                            },
+                            "englishName": {
+                                "value": "Japan",
+                                "__typename": "Translation"
+                            },
+                            "__typename": "Destination"
+                        },
+                        "highlights": {
+                            "popular": false,
+                            "__typename": "AccommodationHighlights"
+                        },
+                        "locality": {
+                            "translatedName": {
+                                "value": "名古屋",
+                                "__typename": "Translation"
+                            },
+                            "englishName": {
+                                "value": "Nagoya",
+                                "__typename": "Translation"
+                            },
+                            "__typename": "Destination"
+                        },
+                        "topAmenities": [
+                            {
+                                "isFree": true,
+                                "isAvailable": true,
+                                "name": {
+                                    "value": "大堂 Wi-Fi",
+                                    "__typename": "Translation"
+                                },
+                                "nsid": {
+                                    "id": 62,
+                                    "ns": 300,
+                                    "__typename": "Nsid"
+                                },
+                                "__typename": "Amenity"
+                            },
+                            {
+                                "isFree": true,
+                                "isAvailable": true,
+                                "name": {
+                                    "value": "客房 Wi-Fi",
+                                    "__typename": "Translation"
+                                },
+                                "nsid": {
+                                    "id": 254,
+                                    "ns": 300,
+                                    "__typename": "Nsid"
+                                },
+                                "__typename": "Amenity"
+                            },
+                            {
+                                "isFree": false,
+                                "isAvailable": false,
+                                "name": {
+                                    "value": "游泳池",
+                                    "__typename": "Translation"
+                                },
+                                "nsid": {
+                                    "id": 35,
+                                    "ns": 300,
+                                    "__typename": "Nsid"
+                                },
+                                "__typename": "Amenity"
+                            },
+                            {
+                                "isFree": false,
+                                "isAvailable": false,
+                                "name": {
+                                    "value": "水療",
+                                    "__typename": "Translation"
+                                },
+                                "nsid": {
+                                    "id": 60,
+                                    "ns": 300,
+                                    "__typename": "Nsid"
+                                },
+                                "__typename": "Amenity"
+                            },
+                            {
+                                "isFree": false,
+                                "isAvailable": false,
+                                "name": {
+                                    "value": "停車場",
+                                    "__typename": "Translation"
+                                },
+                                "nsid": {
+                                    "id": 25,
+                                    "ns": 300,
+                                    "__typename": "Nsid"
+                                },
+                                "__typename": "Amenity"
+                            },
+                            {
+                                "isFree": false,
+                                "isAvailable": false,
+                                "name": {
+                                    "value": "可帶寵物",
+                                    "__typename": "Translation"
+                                },
+                                "nsid": {
+                                    "id": 30,
+                                    "ns": 300,
+                                    "__typename": "Nsid"
+                                },
+                                "__typename": "Amenity"
+                            },
+                            {
+                                "isFree": false,
+                                "isAvailable": true,
+                                "name": {
+                                    "value": "冷氣",
+                                    "__typename": "Translation"
+                                },
+                                "nsid": {
+                                    "id": 86,
+                                    "ns": 300,
+                                    "__typename": "Nsid"
+                                },
+                                "__typename": "Amenity"
+                            },
+                            {
+                                "isFree": false,
+                                "isAvailable": true,
+                                "name": {
+                                    "value": "餐廳",
+                                    "__typename": "Translation"
+                                },
+                                "nsid": {
+                                    "id": 47,
+                                    "ns": 300,
+                                    "__typename": "Nsid"
+                                },
+                                "__typename": "Amenity"
+                            },
+                            {
+                                "isFree": false,
+                                "isAvailable": false,
+                                "name": {
+                                    "value": "酒吧",
+                                    "__typename": "Translation"
+                                },
+                                "nsid": {
+                                    "id": 31,
+                                    "ns": 300,
+                                    "__typename": "Nsid"
+                                },
+                                "__typename": "Amenity"
+                            },
+                            {
+                                "isFree": false,
+                                "isAvailable": false,
+                                "name": {
+                                    "value": "健身室",
+                                    "__typename": "Translation"
+                                },
+                                "nsid": {
+                                    "id": 23,
+                                    "ns": 300,
+                                    "__typename": "Nsid"
+                                },
+                                "__typename": "Amenity"
+                            }
+                        ],
+                        "hasActiveStudioPlusSubscription": false,
+                        "typeObject": {
+                            "translatedName": {
+                                "value": "酒店",
+                                "__typename": "Translation"
+                            },
+                            "nsid": {
+                                "id": 2,
+                                "ns": 101,
+                                "__typename": "Nsid"
+                            },
+                            "__typename": "TranslatedConcept"
+                        },
+                        "nsid": {
+                            "id": 9011406,
+                            "ns": 100,
+                            "__typename": "Nsid"
+                        },
+                        "hasRoomDetails70344": true,
+                        "__typename": "AccommodationDetails"
+                    },
+                    "creationDatetime": null,
+                    "city": "名古屋",
+                    "cityId": 69847,
+                    "coordinates": {
+                        "latitude": 35.04920959472656,
+                        "longitude": 136.84104919433594,
+                        "__typename": "Coordinates"
+                    },
+                    "distanceToDestination": null,
+                    "distanceLabel": {
+                        "value": "距離市中心 15.9 km ",
+                        "__typename": "Translation"
+                    },
+                    "mainImagePath": "/hotelier-images/e0/43/9005d4ddcf61bb01b4bf5ff78b3615dd3226fe09b96ce89d272bf1ee1469",
+                    "imagesCount": 49,
+                    "hasSpecialOffer": false,
+                    "category": null,
+                    "isSuperior": false,
+                    "rating": 8994,
+                    "ratingsCount": 2004,
+                    "formattedRating": "9.0",
+                    "deals": {
+                        "best": {
+                            "advertiser": {
+                                "nsid": {
+                                    "id": 111,
+                                    "ns": 400,
+                                    "__typename": "Nsid"
+                                },
+                                "__typename": "AdvertiserDetails"
+                            },
+                            "advertiserDetails": {
+                                "nsid": {
+                                    "id": 111,
+                                    "ns": 400,
+                                    "__typename": "Nsid"
+                                },
+                                "group": {
+                                    "nsid": {
+                                        "id": 80,
+                                        "ns": 400,
+                                        "__typename": "Nsid"
+                                    },
+                                    "__typename": "AdvertiserDetails"
+                                },
+                                "logo": {
+                                    "localizedUrlTail": "/partnerlogos-s3/gray/website_logo_HK",
+                                    "localizedFaviconUrlTail": null,
+                                    "__typename": "AdvertiserLogo"
+                                },
+                                "advertiserTagline": null,
+                                "__typename": "AdvertiserDetails"
+                            },
+                            "accommodationDetails": {
+                                "nsid": {
+                                    "id": 9011406,
+                                    "ns": 100,
+                                    "__typename": "Nsid"
+                                },
+                                "__typename": "AccommodationDetails"
+                            },
+                            "enrichedPriceAttributesTranslated": [
+                                {
+                                    "logValue": 2,
+                                    "nsid": {
+                                        "id": 1,
+                                        "ns": 412,
+                                        "__typename": "Nsid"
+                                    },
+                                    "positive": true,
+                                    "translatedName": {
+                                        "value": "免費取消",
+                                        "__typename": "Translation"
+                                    },
+                                    "englishName": {
+                                        "value": "Free cancellation",
+                                        "__typename": "Translation"
+                                    },
+                                    "__typename": "EnrichedPriceAttributeTranslated"
+                                },
+                                {
+                                    "logValue": 1,
+                                    "nsid": {
+                                        "id": 2,
+                                        "ns": 411,
+                                        "__typename": "Nsid"
+                                    },
+                                    "positive": true,
+                                    "translatedName": {
+                                        "value": "包早餐",
+                                        "__typename": "Translation"
+                                    },
+                                    "englishName": {
+                                        "value": "Breakfast included",
+                                        "__typename": "Translation"
+                                    },
+                                    "__typename": "EnrichedPriceAttributeTranslated"
+                                }
+                            ],
+                            "gtmClickoutEventDetails": "+PPD0YEE2SgQJ5AlHLDoaYMZ9vsLQM4vZedvNJsSXyQO82DR3YJP",
+                            "clickoutUrl": "https://www.trivago.hk/forward/zh-Hant-HK?forwarderA=NGIYnaxKUeCoE3NjT6%2F%2Bq4bWXIHBrhqKybequzhvfNs%2B9bD%2Feh9VM7KmJ%2FdNDctnwkcuNhCcR8C5sEO9rWwP%2FwfXnjrMaw0zm9DB1%2FNsIbrEixxaCiDXd0fQ0IUAcIOROCyu1Ln5U3FiEht6lwjr192e1T7v0%2BthaNZSAiN1%2BhL%2FFYM2QGzORyWtwi6W6YRrPMUr6DfHrfCNS5jglqBPwI%2FDObKQa6sp9zLZgVKKopDLqLKrdl%2FzkbTsFvY3JlSg9caXi10xMvbksRkOrJW5WblfMGu5Z8uQ5%2BXmtZLtOCPfh1BggV%2F1rD%2BEb1F3tXTVGAjAUU7AxF9206o6v5wowmje%2F%2FeS7GpBtQt5VEuEN5Bo&forwarderB=yFBEOQiI0lvdfyPbCb8noq77J7Xbpz%2F6z5gi1Oe7dW1M4EhIiy87Wc4vvLPeDS9NPkqb36bTI3qxpuIurVPR1M6gkuhJOrOVxwhpySIoDG6W8mVBPSMR0%2BQO1%2FrI7ZJktNHgiisPgDIu3AZjgFPKdlDkcCNbrsn9NIZaAjxmpfaGtLNEJJt9fIu16inMq%2FlYEKueli0m9lMiK%2B91uimDYy%2FsvMAu74TcWSpvtT6xUIwy2DRlhdltUwpg3ylHSjsr1fsbp2%2FAnOKSk80Qm7gbKbhQjkBFy8GU3%2BCDS%2F3oHc%2BY8lL6XhSgzi8m1APyCVCAze75AsMubWfZ9VL9NdqVXjLA9f%2BYipld9vOAeKFn4VST4%2B%2BM42DibpFKyPI%2Fu%2Fc4OjAm",
+                            "description": null,
+                            "displayAttributesList": [
+                                "CHAMPION_DEAL",
+                                "DIRECT_CONNECT",
+                                "MINIMUM_DEAL"
+                            ],
+                            "pricePerNight": {
+                                "amount": 2470,
+                                "eurocents": 29609,
+                                "__typename": "MonetaryValue"
+                            },
+                            "pricePerStayObject": {
+                                "amount": 17288,
+                                "eurocents": null,
+                                "__typename": "MonetaryValue"
+                            },
+                            "pricePerNightStrikethrough": null,
+                            "pricePerStayStrikethrough": null,
+                            "roomCategory": null,
+                            "dealClassifications": [
+                                {
+                                    "score": 21,
+                                    "type": {
+                                        "nsid": {
+                                            "id": 2,
+                                            "ns": 415,
+                                            "__typename": "Nsid"
+                                        },
+                                        "__typename": "TranslatedConcept"
+                                    },
+                                    "__typename": "AccommodationDealClassification"
+                                }
+                            ],
+                            "id": "7770317900715131740",
+                            "priceComponents": [],
+                            "priceDetails": {
+                                "freeCancellationDeadline": null,
+                                "__typename": "PriceDetails"
+                            },
+                            "__typename": "AccommodationDeal"
+                        },
+                        "alternatives": [
+                            {
+                                "advertiser": {
+                                    "nsid": {
+                                        "id": 634,
+                                        "ns": 400,
+                                        "__typename": "Nsid"
+                                    },
+                                    "__typename": "AdvertiserDetails"
+                                },
+                                "advertiserDetails": {
+                                    "nsid": {
+                                        "id": 634,
+                                        "ns": 400,
+                                        "__typename": "Nsid"
+                                    },
+                                    "group": null,
+                                    "logo": {
+                                        "localizedUrlTail": "/partnerlogos-s3/634",
+                                        "localizedFaviconUrlTail": "/partnerlogos-squared/634",
+                                        "__typename": "AdvertiserLogo"
+                                    },
+                                    "advertiserTagline": null,
+                                    "__typename": "AdvertiserDetails"
+                                },
+                                "accommodationDetails": {
+                                    "nsid": {
+                                        "id": 9011406,
+                                        "ns": 100,
+                                        "__typename": "Nsid"
+                                    },
+                                    "__typename": "AccommodationDetails"
+                                },
+                                "enrichedPriceAttributesTranslated": [
+                                    {
+                                        "logValue": 1,
+                                        "nsid": {
+                                            "id": 2,
+                                            "ns": 411,
+                                            "__typename": "Nsid"
+                                        },
+                                        "positive": true,
+                                        "translatedName": {
+                                            "value": "包早餐",
+                                            "__typename": "Translation"
+                                        },
+                                        "englishName": {
+                                            "value": "Breakfast included",
+                                            "__typename": "Translation"
+                                        },
+                                        "__typename": "EnrichedPriceAttributeTranslated"
+                                    },
+                                    {
+                                        "logValue": 32768,
+                                        "nsid": {
+                                            "id": 2,
+                                            "ns": 412,
+                                            "__typename": "Nsid"
+                                        },
+                                        "positive": false,
+                                        "translatedName": {
+                                            "value": "不設退款",
+                                            "__typename": "Translation"
+                                        },
+                                        "englishName": {
+                                            "value": "Non-refundable",
+                                            "__typename": "Translation"
+                                        },
+                                        "__typename": "EnrichedPriceAttributeTranslated"
+                                    }
+                                ],
+                                "gtmClickoutEventDetails": "h/9P/E0Cr4PwYYp9rUsa+cpv5Z5gpYD2nDBODHYEKuDxae8gvgSV",
+                                "clickoutUrl": "https://www.trivago.hk/forward/zh-Hant-HK?forwarderA=WVDTc297pAvLKhfrmWu8XsoxD1QRI%2Fn7h7qfxlG9hKorWFCuGtIJOOy1%2FW0YR0QFoLzzzuDfIjS4SqZOVxCwjCbLlYbVslfq58adxAeqa5D7KkmCMnfeX3tZo%2B4OdmTB2%2BhWJX%2BNZapRZWvCfUrjQ2vVAZXzR%2FfFeXiD8CE3olIvQAiM9QIdHJMIvCI%2BgqGrdbAERbylG5pv0UJn284ICB%2FS5HgzIrgn93PJINWGfSLubYJbmaG2IP2kD6CIYKcwx%2FrmNZ4QYSVl5TkDiwk5PvY4IsW%2BSbpJR0On%2FQ0M0Pp1RV%2FXnAKtqCSirbMsz%2B1SzIWiTDlV1cBahHt6jm7Cia4lAF5x5gch6rLE%2FXjU46tJ&forwarderB=HUhfmowRCyFg%2BUpqqReeb7%2BqhQlivuNrVF%2FEd5cI%2FaqM%2FASbQZ3C6%2F4T%2B6mx6YCqPusv1hksvpBW6pc3AdoMxVKbZzhBlZ9BuNd5C44yJ6HasPYwNaI%2F8wlqggjD8SRPn1figMm7VshSDLcJwSQYMBEWVn9NGH8TnNtmisXNaKIzBK0CKoNvBiOPZGbLyyN3qTWSe5QQWR6yvC6CKphD5ohRJIPoEuMiaYRffIf3fqho6WUVyF4EBK2qaeZKw2eED3CwvqbycO8F46l1hty39O8RvZn4jdOIwtAcY7jXnnuf3fQc8rB4YYxz0nck7E9IFojkUWZXdP4fv6I2229xwBVeQbfno8Hp6hCpWOkie92WaFfUexMS4HiJInXVLA99SMZA",
+                                "description": null,
+                                "displayAttributesList": [
+                                    "ALTERNATIVE_DEAL"
+                                ],
+                                "pricePerNight": {
+                                    "amount": 2505,
+                                    "eurocents": 30029,
+                                    "__typename": "MonetaryValue"
+                                },
+                                "pricePerStayObject": {
+                                    "amount": 17534,
+                                    "eurocents": null,
+                                    "__typename": "MonetaryValue"
+                                },
+                                "pricePerNightStrikethrough": null,
+                                "pricePerStayStrikethrough": null,
+                                "roomCategory": null,
+                                "dealClassifications": [],
+                                "id": "2073227905189969934",
+                                "priceComponents": [],
+                                "priceDetails": {
+                                    "freeCancellationDeadline": null,
+                                    "__typename": "PriceDetails"
+                                },
+                                "__typename": "AccommodationDeal"
+                            },
+                            {
+                                "advertiser": {
+                                    "nsid": {
+                                        "id": 1316,
+                                        "ns": 400,
+                                        "__typename": "Nsid"
+                                    },
+                                    "__typename": "AdvertiserDetails"
+                                },
+                                "advertiserDetails": {
+                                    "nsid": {
+                                        "id": 1316,
+                                        "ns": 400,
+                                        "__typename": "Nsid"
+                                    },
+                                    "group": null,
+                                    "logo": {
+                                        "localizedUrlTail": "/partnerlogos-s3/1316",
+                                        "localizedFaviconUrlTail": null,
+                                        "__typename": "AdvertiserLogo"
+                                    },
+                                    "advertiserTagline": "專注營運旅遊服務逾半世紀 全球100萬間精選酒店",
+                                    "__typename": "AdvertiserDetails"
+                                },
+                                "accommodationDetails": {
+                                    "nsid": {
+                                        "id": 9011406,
+                                        "ns": 100,
+                                        "__typename": "Nsid"
+                                    },
+                                    "__typename": "AccommodationDetails"
+                                },
+                                "enrichedPriceAttributesTranslated": [
+                                    {
+                                        "logValue": 1,
+                                        "nsid": {
+                                            "id": 2,
+                                            "ns": 411,
+                                            "__typename": "Nsid"
+                                        },
+                                        "positive": true,
+                                        "translatedName": {
+                                            "value": "包早餐",
+                                            "__typename": "Translation"
+                                        },
+                                        "englishName": {
+                                            "value": "Breakfast included",
+                                            "__typename": "Translation"
+                                        },
+                                        "__typename": "EnrichedPriceAttributeTranslated"
+                                    },
+                                    {
+                                        "logValue": 32768,
+                                        "nsid": {
+                                            "id": 2,
+                                            "ns": 412,
+                                            "__typename": "Nsid"
+                                        },
+                                        "positive": false,
+                                        "translatedName": {
+                                            "value": "不設退款",
+                                            "__typename": "Translation"
+                                        },
+                                        "englishName": {
+                                            "value": "Non-refundable",
+                                            "__typename": "Translation"
+                                        },
+                                        "__typename": "EnrichedPriceAttributeTranslated"
+                                    }
+                                ],
+                                "gtmClickoutEventDetails": "5pSYdhz9+m0RTOtzoj37/ltj1KNwzr9Rg0O85vku3QV/jp5YZRmM",
+                                "clickoutUrl": "https://www.trivago.hk/forward/zh-Hant-HK?forwarderA=ydegYcCvU27%2F3Z7K%2BQdc6HYTV4FN1gr9syYkF%2FntI7z48aYOMLJN8YowNlO8ilrVLNOiQK3wBwnz1nU5%2Bh%2B0FrdgZMGQHo%2BGC9%2B1ACPwYQf9rW9%2FTOakl2QCjbFXPH99xDcdrue0KyUMfXficmkiHEypjmsG3EMHG6nWwR22jxGyxXwkYHUetjmEgZSc%2B62r7%2FzQkfhX6pjuRUM4IRRNBtbtD0rxGEdmk%2FrurOxxILEhSWpycMYuSVzfg7DU3%2B0S7PVViK3uiBwbJMuULyCL90ggp8WB7vVjY7tM7JhlNFgqDREq9jWzqA9WQrbXTP%2BnqtIA5q79EJyrdejirRibi8c20i2uMoE%2FxdSRN%2Fym1kag&forwarderB=MOrQC8r5u3zYtnYcgyiPMnU5WeUMZ8XEj4nEV8njlg36YtvOE245cwgN3WZbVWcTvlh7cKXpctFt0Rs2OOzPkutrz6%2BXU34s8bWGTUaARixZ3x0DAmhtwlQJupfSjHKKkZx2JWP3I3m4A1CbfOvS%2B0DZ1OU7PmNYj0R9ZpkL3438zwP1v2dw070oLG%2F16CENH5HsXi0WLZT1XNrZgfZPUtig6WNecA%2BLG1m7SgI3e6zGmN6QIRuTrxaKzovSTJnlJsCtYJBHwtSKyzEQacrEOcAknBM9Agn6LwdtRppfiQtWeDiFUEzpW4KzrUCYcu%2BGJ7844FZUIR3iy9iDVj%2FlZhVcx%2Fc19rCck3aNv02%2FQ3dVFdjYNw4W8Mp6IzAxuJwp8Ns%3D",
+                                "description": null,
+                                "displayAttributesList": [
+                                    "ALTERNATIVE_DEAL"
+                                ],
+                                "pricePerNight": {
+                                    "amount": 2775,
+                                    "eurocents": 33268,
+                                    "__typename": "MonetaryValue"
+                                },
+                                "pricePerStayObject": {
+                                    "amount": 19425,
+                                    "eurocents": null,
+                                    "__typename": "MonetaryValue"
+                                },
+                                "pricePerNightStrikethrough": null,
+                                "pricePerStayStrikethrough": null,
+                                "roomCategory": null,
+                                "dealClassifications": [],
+                                "id": "-2912483034471571422",
+                                "priceComponents": [],
+                                "priceDetails": {
+                                    "freeCancellationDeadline": null,
+                                    "__typename": "PriceDetails"
+                                },
+                                "__typename": "AccommodationDeal"
+                            },
+                            {
+                                "advertiser": {
+                                    "nsid": {
+                                        "id": 626,
+                                        "ns": 400,
+                                        "__typename": "Nsid"
+                                    },
+                                    "__typename": "AdvertiserDetails"
+                                },
+                                "advertiserDetails": {
+                                    "nsid": {
+                                        "id": 626,
+                                        "ns": 400,
+                                        "__typename": "Nsid"
+                                    },
+                                    "group": null,
+                                    "logo": {
+                                        "localizedUrlTail": "/partnerlogos-s3/626",
+                                        "localizedFaviconUrlTail": "/partnerlogos-squared/626",
+                                        "__typename": "AdvertiserLogo"
+                                    },
+                                    "advertiserTagline": null,
+                                    "__typename": "AdvertiserDetails"
+                                },
+                                "accommodationDetails": {
+                                    "nsid": {
+                                        "id": 9011406,
+                                        "ns": 100,
+                                        "__typename": "Nsid"
+                                    },
+                                    "__typename": "AccommodationDetails"
+                                },
+                                "enrichedPriceAttributesTranslated": [
+                                    {
+                                        "logValue": 1,
+                                        "nsid": {
+                                            "id": 2,
+                                            "ns": 411,
+                                            "__typename": "Nsid"
+                                        },
+                                        "positive": true,
+                                        "translatedName": {
+                                            "value": "包早餐",
+                                            "__typename": "Translation"
+                                        },
+                                        "englishName": {
+                                            "value": "Breakfast included",
+                                            "__typename": "Translation"
+                                        },
+                                        "__typename": "EnrichedPriceAttributeTranslated"
+                                    },
+                                    {
+                                        "logValue": 32768,
+                                        "nsid": {
+                                            "id": 2,
+                                            "ns": 412,
+                                            "__typename": "Nsid"
+                                        },
+                                        "positive": false,
+                                        "translatedName": {
+                                            "value": "不設退款",
+                                            "__typename": "Translation"
+                                        },
+                                        "englishName": {
+                                            "value": "Non-refundable",
+                                            "__typename": "Translation"
+                                        },
+                                        "__typename": "EnrichedPriceAttributeTranslated"
+                                    }
+                                ],
+                                "gtmClickoutEventDetails": "cDQgTzvD68Kt1oJD7uiVqxbaxPSoVqEB1Ej6DOGxk3POHpSSi8lw",
+                                "clickoutUrl": "https://www.trivago.hk/forward/zh-Hant-HK?forwarderA=EMxcyi7MIKEYuYqfVZFipKkGP42qWsDshVKeVD91rvhWoTKlVbKhl1%2Bpv7GLkIxTux2wj7b2aoWVBQLn9XTP8%2BtTlETxK%2Fu9zD4piSCPMy%2BVwSAJVKmqnB7dXGHfGuNm2y9ihA6Pkd3Y7HiLHsCGv4AMRbStzQb0AtV22Ux2kd5vFWNAoWcklDX5sNy936Z50BRN3vJNPHWcVU%2FsVPte6Z%2FuKlX21ywBvcJIHFXaxkLMWYR6UAf6hVXlA8EqI4I9IPR%2B6LHyGDTPwPl38HJr4i2tw%2Fwn%2FC4I%2BkqqsDaML8DuQiVJIuSJCff8ZLLZXdBJ%2FY9cj4hRvwoMiA3jl2DeAQtFwputVpE%2B5DdevBpnMnsn&forwarderB=6rOfpgWvEoqwFUG%2BacqteKc0dlXrPZ1jpq4TqRAuXAdIEXZGpUi2cZJ6HgiY%2ByBX1wcGBnxLGDmVBOCGAXIUZ6%2BP7liFw39LQe7rYlWMqWU5QrSajhWN5TlOUClW9N9ygpsb%2BKOdnCkPLTADAGgLONwx2m7ZuMUEoImPHkbHsM4PlE64hrhRVw26XGrqeq9sLyA42OCmfPyGZFNP0UoNJtGMWss4w0fN758m5eHD%2FyyZHQcUE3I3PUrWrx8yJLXJcShPrb4J4GfO%2Fo411zkq31WZG1rn%2FlT0RmzOUQF8bfkmEt4sIiql1%2FMexIgk%2BRsdn0P%2Bog8mDRtXqrLPaPGv52PHJnCJ6uvfVcksrPAa9WkR0xukzxyTyQz0qA%3D%3D",
+                                "description": null,
+                                "displayAttributesList": [
+                                    "ALTERNATIVE_DEAL"
+                                ],
+                                "pricePerNight": {
+                                    "amount": 2609,
+                                    "eurocents": 31280,
+                                    "__typename": "MonetaryValue"
+                                },
+                                "pricePerStayObject": {
+                                    "amount": 18264,
+                                    "eurocents": null,
+                                    "__typename": "MonetaryValue"
+                                },
+                                "pricePerNightStrikethrough": null,
+                                "pricePerStayStrikethrough": null,
+                                "roomCategory": null,
+                                "dealClassifications": [],
+                                "id": "-52603062558291643",
+                                "priceComponents": [],
+                                "priceDetails": {
+                                    "freeCancellationDeadline": null,
+                                    "__typename": "PriceDetails"
+                                },
+                                "__typename": "AccommodationDeal"
+                            }
+                        ],
+                        "cheapest": {
+                            "advertiser": {
+                                "nsid": {
+                                    "id": 111,
+                                    "ns": 400,
+                                    "__typename": "Nsid"
+                                },
+                                "__typename": "AdvertiserDetails"
+                            },
+                            "advertiserDetails": {
+                                "nsid": {
+                                    "id": 111,
+                                    "ns": 400,
+                                    "__typename": "Nsid"
+                                },
+                                "group": {
+                                    "nsid": {
+                                        "id": 80,
+                                        "ns": 400,
+                                        "__typename": "Nsid"
+                                    },
+                                    "__typename": "AdvertiserDetails"
+                                },
+                                "logo": {
+                                    "localizedUrlTail": "/partnerlogos-s3/gray/website_logo_HK",
+                                    "localizedFaviconUrlTail": null,
+                                    "__typename": "AdvertiserLogo"
+                                },
+                                "advertiserTagline": null,
+                                "__typename": "AdvertiserDetails"
+                            },
+                            "accommodationDetails": {
+                                "nsid": {
+                                    "id": 9011406,
+                                    "ns": 100,
+                                    "__typename": "Nsid"
+                                },
+                                "__typename": "AccommodationDetails"
+                            },
+                            "enrichedPriceAttributesTranslated": [
+                                {
+                                    "logValue": 2,
+                                    "nsid": {
+                                        "id": 1,
+                                        "ns": 412,
+                                        "__typename": "Nsid"
+                                    },
+                                    "positive": true,
+                                    "translatedName": {
+                                        "value": "免費取消",
+                                        "__typename": "Translation"
+                                    },
+                                    "englishName": {
+                                        "value": "Free cancellation",
+                                        "__typename": "Translation"
+                                    },
+                                    "__typename": "EnrichedPriceAttributeTranslated"
+                                },
+                                {
+                                    "logValue": 1,
+                                    "nsid": {
+                                        "id": 2,
+                                        "ns": 411,
+                                        "__typename": "Nsid"
+                                    },
+                                    "positive": true,
+                                    "translatedName": {
+                                        "value": "包早餐",
+                                        "__typename": "Translation"
+                                    },
+                                    "englishName": {
+                                        "value": "Breakfast included",
+                                        "__typename": "Translation"
+                                    },
+                                    "__typename": "EnrichedPriceAttributeTranslated"
+                                }
+                            ],
+                            "gtmClickoutEventDetails": "+PPD0YEE2SgQJ5AlHLDoaYMZ9vsLQM4vZedvNJsSXyQO82DR3YJP",
+                            "clickoutUrl": "https://www.trivago.hk/forward/zh-Hant-HK?forwarderA=NGIYnaxKUeCoE3NjT6%2F%2Bq4bWXIHBrhqKybequzhvfNs%2B9bD%2Feh9VM7KmJ%2FdNDctnwkcuNhCcR8C5sEO9rWwP%2FwfXnjrMaw0zm9DB1%2FNsIbrEixxaCiDXd0fQ0IUAcIOROCyu1Ln5U3FiEht6lwjr192e1T7v0%2BthaNZSAiN1%2BhL%2FFYM2QGzORyWtwi6W6YRrPMUr6DfHrfCNS5jglqBPwI%2FDObKQa6sp9zLZgVKKopDLqLKrdl%2FzkbTsFvY3JlSg9caXi10xMvbksRkOrJW5WblfMGu5Z8uQ5%2BXmtZLtOCPfh1BggV%2F1rD%2BEb1F3tXTVGAjAUU7AxF9206o6v5wowmje%2F%2FeS7GpBtQt5VEuEN5Bo&forwarderB=yFBEOQiI0lvdfyPbCb8noq77J7Xbpz%2F6z5gi1Oe7dW1M4EhIiy87Wc4vvLPeDS9NPkqb36bTI3qxpuIurVPR1M6gkuhJOrOVxwhpySIoDG6W8mVBPSMR0%2BQO1%2FrI7ZJktNHgiisPgDIu3AZjgFPKdlDkcCNbrsn9NIZaAjxmpfaGtLNEJJt9fIu16inMq%2FlYEKueli0m9lMiK%2B91uimDYy%2FsvMAu74TcWSpvtT6xUIwy2DRlhdltUwpg3ylHSjsr1fsbp2%2FAnOKSk80Qm7gbKbhQjkBFy8GU3%2BCDS%2F3oHc%2BY8lL6XhSgzi8m1APyCVCAze75AsMubWfZ9VL9NdqVXjLA9f%2BYipld9vOAeKFn4VST4%2B%2BM42DibpFKyPI%2Fu%2Fc4OjAm",
+                            "description": null,
+                            "displayAttributesList": [
+                                "CHAMPION_DEAL",
+                                "DIRECT_CONNECT",
+                                "MINIMUM_DEAL"
+                            ],
+                            "pricePerNight": {
+                                "amount": 2470,
+                                "eurocents": 29609,
+                                "__typename": "MonetaryValue"
+                            },
+                            "pricePerStayObject": {
+                                "amount": 17288,
+                                "eurocents": null,
+                                "__typename": "MonetaryValue"
+                            },
+                            "pricePerNightStrikethrough": null,
+                            "pricePerStayStrikethrough": null,
+                            "roomCategory": null,
+                            "dealClassifications": [
+                                {
+                                    "score": 21,
+                                    "type": {
+                                        "nsid": {
+                                            "id": 2,
+                                            "ns": 415,
+                                            "__typename": "Nsid"
+                                        },
+                                        "__typename": "TranslatedConcept"
+                                    },
+                                    "__typename": "AccommodationDealClassification"
+                                }
+                            ],
+                            "id": "7770317900715131740",
+                            "priceComponents": [],
+                            "priceDetails": {
+                                "freeCancellationDeadline": null,
+                                "__typename": "PriceDetails"
+                            },
+                            "__typename": "AccommodationDeal"
+                        },
+                        "worst": null,
+                        "__typename": "AccommodationDeals"
+                    },
+                    "isSponsored": false,
+                    "searchReflectionConcepts": [
+                        {
+                            "nsid": {
+                                "id": 69847,
+                                "ns": 200,
+                                "__typename": "Nsid"
+                            },
+                            "__typename": "TranslatedConcept"
+                        }
+                    ],
+                    "displayInformation": {
+                        "advertisersWithEligiblePrices": 9,
+                        "__typename": "AccommodationDisplayInformation"
+                    },
+                    "priceRestrictions": [
+                        "NO_RESTRICTION"
+                    ],
+                    "__typename": "Accommodation"
+                },

@@ -1,0 +1,16 @@
+home_page: ""
+bot_check: ""
+search_item:
+  where_to: ""
+  checkin: ""
+  checkout: ""
+  guestandrooms: ""
+language: English
+currency: HKD
+advertise: 
+  dialog:
+    data-testid: "modal-container"
+    closeButton:
+      class: IdleNotification_closeButton__Hlj6a
+
+
