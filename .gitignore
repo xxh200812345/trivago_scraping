@@ -1,4 +1,4 @@
-trivago_venv/
+ts-env/
 build/
 output/
 *.log
