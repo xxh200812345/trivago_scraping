@@ -1,7 +1,7 @@
 import openpyxl
 
 # Load the workbook
-wb = openpyxl.load_workbook('your_excel_file.xlsx')
+wb = openpyxl.load_workbook(r'trivago_scraping\res\searchlist.xlsx')
 
 # Get the active worksheet
 ws = wb.active
@@ -11,8 +11,8 @@ for cell in ws[1]:
     print(cell.value)
 
 # Print the row data
-for row in ws.iter_rows(min_row=2):
+for index, row in enumerate(ws.iter_rows(min_row=2)):
     row_data = []
     for cell in row:
         row_data.append(cell.value)
-    print(row_data)
+    print(f"{index} {row_data}")
