@@ -1,6 +1,7 @@
 import time
 
 from trivago_log import TaLog
+from trivago_task import TaTask
 
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
@@ -40,10 +41,11 @@ class TaLogin:
         op = webdriver.EdgeOptions()
         #     op.add_argument(
         # '--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36')
-        op.add_argument('--accept-language=en')
+        op.add_argument("--accept-language=en")
 
-        driver = webdriver.Edge(service=EdgeService(
-            EdgeChromiumDriverManager().install()), options=op)
+        driver = webdriver.Edge(
+            service=EdgeService(EdgeChromiumDriverManager().install()), options=op
+        )
         driver.execute_script("window.open('','_blank');")
         driver.switch_to.window(driver.window_handles[0])
         self.driver = driver
@@ -62,8 +64,7 @@ class TaLogin:
         """
         是否被判定为机器人,True 是机器人
         """
-        element = self.driver.find_element(
-            By.XPATH, "//div[@id='sec-overlay']")
+        element = self.driver.find_element(By.XPATH, "//div[@id='sec-overlay']")
         return element.is_displayed()
 
     def bot_check_wait(self, sleeptime=1):
@@ -87,3 +88,10 @@ class TaLogin:
             stime += 1
         if stime > 0:
             logger.info("反爬虫结束")
+
+    def do_task(self, task: TaTask):
+        """
+        单独处理每一个task
+        """
+        logger = TaLog().logger
+        logger.info(f"{task.log_key}start query")
