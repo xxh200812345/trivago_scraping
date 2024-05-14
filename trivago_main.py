@@ -1,4 +1,4 @@
-import trivago_task as TaTask
+from trivago_task import TaTask
 from trivago_log import TaLog
 from trivago_login import TaLogin
 from trivago_tool import TaConfig
@@ -20,7 +20,7 @@ def main():
     _driver = TaLogin().driver
     # 获取爬虫信息
     searchlist_path = _config["searchlist"]["path"] + _config["searchlist"]["name"]
-    tasks = TaTask.get(searchlist_path)
+    tasks = TaTask.get_tasks(searchlist_path)
     # 开始执行爬虫
     start(tasks)
     # 关闭浏览器

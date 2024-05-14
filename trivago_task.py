@@ -33,7 +33,7 @@ class TaTask:
         return str(self.__dict__)
 
     @classmethod
-    def get(cls, file_path):
+    def get_tasks(cls, file_path):
         # 取searchlist数据
         searchlist_exl = px.load_workbook(file_path)
         ws = searchlist_exl.active

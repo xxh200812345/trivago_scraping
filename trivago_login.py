@@ -25,12 +25,9 @@ class TaLogin:
 
     def __new__(cls, *args, **kwargs):
         if not cls._instance:
-            cls._instance = super().__new__(cls, *args, **kwargs)
+            cls._instance = super(TaLogin, cls).__new__(cls)
+            cls._instance.driver = cls._instance.driver_init_edge()
         return cls._instance
-
-    def __init__(self):
-        # 添加成员变量
-        self.driver_init_edge()
 
     def driver_init_edge(self):
         _logger = TaLog().logger
@@ -48,7 +45,7 @@ class TaLogin:
         )
         driver.execute_script("window.open('','_blank');")
         driver.switch_to.window(driver.window_handles[0])
-        self.driver = driver
+        return driver
 
     def has_element(self, byX, value):
         """
@@ -95,3 +92,4 @@ class TaLogin:
         """
         logger = TaLog().logger
         logger.info(f"{task.log_key}start query")
+        logger.info(f"{task}")
