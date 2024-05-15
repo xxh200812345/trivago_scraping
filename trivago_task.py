@@ -1,6 +1,7 @@
 import openpyxl as px
 
 from trivago_log import TaLog
+from trivago_tool import TaConfig
 
 
 class TaTask:
@@ -11,6 +12,7 @@ class TaTask:
     currency = None
     star = None
     log_key = None
+    url = None
 
     # init
     def __init__(self, cell: list, index: int):
@@ -24,6 +26,10 @@ class TaTask:
                 self.currency,
                 self.star,
             ) = cell
+            _config =  TaConfig().config
+            hk_hp = _config["home_page"]["hk"]
+            url = hk_hp
+
         except Exception as e:
             TaLog().error(f"{self.log_key}TaTask init error: {e}")
             TaLog().error(f"{self.log_key}: {cell}")

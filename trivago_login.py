@@ -2,6 +2,7 @@ import time
 
 from trivago_log import TaLog
 from trivago_task import TaTask
+from trivago_tool import TaConfig
 
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
@@ -91,5 +92,19 @@ class TaLogin:
         单独处理每一个task
         """
         logger = TaLog().logger
+        _config = TaConfig().config
+        _driver = self.driver
+        
         logger.info(f"{task.log_key}start query")
-        logger.info(f"{task}")
+        logger.info(f"{task.log_key}{task}")
+
+        self.goto_homepage()
+
+        logger.info(f"{task.log_key}end query")
+
+    def goto_homepage(self):
+        logger = TaLog().logger
+        _config = TaConfig().config
+        _driver = self.driver
+        
+        

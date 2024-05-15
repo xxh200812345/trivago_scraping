@@ -1,4 +1,9 @@
-home_page: ""
+home_page: 
+  hk: "https://www.trivago.hk/en-HK/lm"
+  # https://www.trivago.hk/en-HK/srl/hotels-tokyo-japan?search=200-71462;dr-20240519-20240522;rc-1-2-4-6
+  template: 
+    url: "https://www.trivago.hk/en-HK/srl/hotels-{city}-{country}?search="
+    param: "{addressid};dr-{checkin}-{checkout};rc-{rooms}-{Adults}{-child_ages}"
 bot_check: ""
 search_item:
   where_to: ""
