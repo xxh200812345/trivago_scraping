@@ -3,7 +3,11 @@ home_page:
   # https://www.trivago.hk/en-HK/srl/hotels-tokyo-japan?search=200-71462;dr-20240519-20240522;rc-1-2-4-6
   template: 
     url: "https://www.trivago.hk/en-HK/srl/hotels-{city}-{country}?search="
-    param: "{addressid};dr-{checkin}-{checkout};rc-{rooms}-{Adults}{-child_ages}"
+    param: "{addressid};dr-{checkin}-{checkout};rc-{rooms}-{Adults}{child_ages}"
+    default:
+      city: tokyo
+      countrym: japan
+      addressid: 200-71462
 bot_check: ""
 search_item:
   where_to: ""
@@ -24,7 +28,25 @@ searchlist:
 
 logging_path: trivago_scraping\config\logging.yml
 
-output:
-  path: trivago_scraping\output
+output: trivago_scraping\output
+
+db:
+  path: trivago_scraping\res\trivago.db
+  tables:
+    city:
+      create: |
+        CREATE TABLE IF NOT EXISTS city (
+            No INTEGER PRIMARY KEY AUTOINCREMENT,
+            search_key TEXT,
+            city_name TEXT,
+            country TEXT,
+            code TEXT,
+            add_time TEXT
+        )
+      insert: |
+        INSERT INTO city (search_key, city_name, country, code, add_time)
+        VALUES (?, ?, ?, ?, ?)
+        
+
 
 

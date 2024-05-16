@@ -26,7 +26,6 @@ def main():
     # 关闭浏览器
     _driver.close()
 
-
 if __name__ == "__main__":  # ⼊⼝函数
     # 初始化
     logging_init()

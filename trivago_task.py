@@ -28,7 +28,7 @@ class TaTask:
             ) = cell
             _config =  TaConfig().config
             hk_hp = _config["home_page"]["hk"]
-            url = hk_hp
+            self.url = hk_hp
 
         except Exception as e:
             TaLog().error(f"{self.log_key}TaTask init error: {e}")
@@ -63,3 +63,14 @@ class TaTask:
             TaLog().error(f"{self.log_key}error data: {self}")
             return True
         return False
+    
+    def set_url(self):
+        logger = TaLog().logger
+        _config = TaConfig().config
+        _driver = self.driver
+
+        template_obj=_config["home_page"]["template"]
+        url = template_obj["url"]
+        param = template_obj["param"]
+        default_value = template_obj["default"]
+

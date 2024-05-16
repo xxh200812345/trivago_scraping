@@ -98,13 +98,18 @@ class TaLogin:
         logger.info(f"{task.log_key}start query")
         logger.info(f"{task.log_key}{task}")
 
-        self.goto_homepage()
+        self.goto_url()
 
         logger.info(f"{task.log_key}end query")
 
-    def goto_homepage(self):
+    def goto_url(self):
         logger = TaLog().logger
         _config = TaConfig().config
         _driver = self.driver
+
+        template_obj=_config["home_page"]["template"]
+        url = template_obj["url"]
+        param = template_obj["param"]
+        default_value = template_obj["default"]
         
         

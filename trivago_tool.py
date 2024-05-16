@@ -4,18 +4,16 @@ class TaConfig:
     _instance = None
     # Path to the configuration file
     CONFIG_PATH = r'trivago_scraping\config\trivago_web.yml'
+
+    city_dict = {}
    
     config = None
 
     def __new__(cls, *args, **kwargs):
         if not cls._instance:
-            cls._instance = super().__new__(cls, *args, **kwargs)
+            cls._instance = super(TaConfig, cls).__new__(cls)
+            cls._instance.config = cls._instance.get_config(TaConfig.CONFIG_PATH)
         return cls._instance
-
-    def __init__(self):
-        # 添加成员变量
-        self.config = self.get_config(self.CONFIG_PATH)
-
 
     def get_config(cls, path):
         '''
@@ -23,11 +21,7 @@ class TaConfig:
         '''
         # Open the YAML file and load its contents
         with open(path, 'r') as stream:
-            try:
-                return yaml.safe_load(stream)
-            except yaml.YAMLError as exc:
-                print(exc)
-
+            return yaml.safe_load(stream)
 
 
 
