@@ -3,6 +3,7 @@ import time
 from trivago_log import TaLog
 from trivago_task import TaTask
 from trivago_tool import TaConfig
+from trivago_db import TaDB
 
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
@@ -98,18 +99,33 @@ class TaLogin:
         logger.info(f"{task.log_key}start query")
         logger.info(f"{task.log_key}{task}")
 
-        self.goto_url()
+        self.goto_url(task)
 
         logger.info(f"{task.log_key}end query")
 
-    def goto_url(self):
+    def goto_url(self,task:TaTask):
         logger = TaLog().logger
         _config = TaConfig().config
+        _db = TaDB()
         _driver = self.driver
 
-        template_obj=_config["home_page"]["template"]
-        url = template_obj["url"]
-        param = template_obj["param"]
-        default_value = template_obj["default"]
+        search_key = task.cityname
+        sql = _db.SQL_TYPE_SEARCH
+        ret = _db.to_do(sql,(search_key,))
+        # 如果db中存在code
+        if len(ret) > 0:
+            row = ret[0]
+            city_name = row[0]
+            country = row[1]
+            code = row[2]
+
+        else:
+            # 没有code,通过构造url,查询search_key的code
+            # 存入db
+
+            template_obj=_config["home_page"]["template"]
+            url = template_obj["url"]
+            param = template_obj["param"]
+            default_value = template_obj["default"]
         
         

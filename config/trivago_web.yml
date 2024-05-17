@@ -36,8 +36,7 @@ db:
     city:
       create: |
         CREATE TABLE IF NOT EXISTS city (
-            No INTEGER PRIMARY KEY AUTOINCREMENT,
-            search_key TEXT,
+            search_key TEXT UNIQUE,
             city_name TEXT,
             country TEXT,
             code TEXT,
@@ -46,6 +45,25 @@ db:
       insert: |
         INSERT INTO city (search_key, city_name, country, code, add_time)
         VALUES (?, ?, ?, ?, ?)
+      delete: |
+        DELETE FROM city
+        WHERE search_key = ?;
+      update_search_key: |
+        UPDATE city
+        SET search_key = ?
+        WHERE search_key = ?;
+      update: |
+        UPDATE city
+        SET city_name = ?, 
+            country = ?, 
+            code = ?, 
+            add_time = ?
+        WHERE search_key = ?;
+      search: |
+        SELECT city_name, country, code FROM city
+        WHERE search_key = ?;
+
+
         
 
 

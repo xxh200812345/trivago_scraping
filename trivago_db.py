@@ -3,10 +3,18 @@ from datetime import datetime
 
 from trivago_tool import TaConfig
 
+
 class TaDB:
     _instance = None
-    db_path = ''
+    db_path = ""
     tables = None
+    SQL_TYPE_CREATE = "create"
+    SQL_TYPE_UPDATE = "update"
+    SQL_TYPE_DELETE = "delete"
+    SQL_TYPE_INSERT = "insert"
+    SQL_TYPE_SEARCH = "search"
+    SQL_TYPE_UPDATE_SEARCH_KEY = "update_search_key"
+
     def __new__(cls, *args, **kwargs):
         if not cls._instance:
             cls._instance = super(TaDB, cls).__new__(cls)
@@ -18,56 +26,61 @@ class TaDB:
 
         self.db_path = _config["db"]["path"]
         self.tables = _config["db"]["tables"]
+        
+        db = TaDB()
+        sql = db.tables["city"][db.SQL_TYPE_CREATE]
+        db.to_do(db.SQL_TYPE_CREATE, sql)
 
-    def create(self, create_table_query):
-        _config = TaConfig().config
-
-        self.db_path = _config["db"]["path"]
+    def to_do(self, sql_type, sql: str, _data=None):
         # Create a new SQLite database named 'trivago.db'
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
 
-        # Execute the query to create the table
-        cursor.execute(create_table_query)
+        if sql_type == self.SQL_TYPE_CREATE:
+            cursor.execute(sql)
+        elif sql_type == self.SQL_TYPE_DELETE:
+            cursor.execute(sql, _data)
+        elif sql_type == self.SQL_TYPE_UPDATE_SEARCH_KEY:
+            cursor.execute(sql, _data)
+        elif sql_type == self.SQL_TYPE_UPDATE:
+            cursor.execute(sql, _data)
+        elif sql_type == self.SQL_TYPE_INSERT:
+            cursor.execute(sql, _data)
+        elif sql_type == self.SQL_TYPE_SEARCH:
+            cursor.execute(sql, _data)
+            rows = cursor.fetchall()
 
         # Commit the changes and close the connection
         conn.commit()
         conn.close()
 
-    def insert(self, insert_data_query, _data):
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-
-        # 插入数据的 SQL 语句
-        insert_data_query = insert_data_query
-
-        # 执行插入数据的查询
-        cursor.execute(insert_data_query, _data)
-        # 提交更改并关闭连接
-        conn.commit()
-        conn.close()
-
-    def update(self, update_data_query, _data):
-        pass
+        if sql_type == self.SQL_TYPE_SEARCH:
+            return rows
 
 
-    def search_by_search_key(self, search_data_query, _data):
-        pass
-    
 def test():
-    db = TaDB()
 
-    create_table_query = db.tables["city"]["create"]
-    db.create(create_table_query)
+    db = TaDB()
+    addtime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     # 准备要插入的数据
-    searchkey = 'beijing_trip'
-    cityname = 'Beijing'
-    country = 'China'
-    code = 'BJ'
-    addtime = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    searchkey = "tokyo"
+    # cityname = "1"
+    # country = "1"
+    # code = "1"
 
-    insert_data_query = db.tables["city"]["insert"]
-    db.insert(insert_data_query,(searchkey, cityname, country, code, addtime))
+    # sql = db.tables["city"][db.SQL_TYPE_INSERT]
+    # db.to_do(db.SQL_TYPE_INSERT, sql, (searchkey, cityname, country, code, addtime))
+    # cityname = "tokyo"
+    # country = "japan"
+    # code = "200-71462"
+    # sql = db.tables["city"][db.SQL_TYPE_UPDATE]
+    # db.to_do(db.SQL_TYPE_UPDATE, sql, (cityname, country, code, addtime, searchkey))
 
-test()
+    # sql = db.tables["city"][db.SQL_TYPE_DELETE]
+    # db.to_do(db.SQL_TYPE_DELETE, sql, (searchkey,))
+
+    sql = db.tables["city"][db.SQL_TYPE_SEARCH]
+    rows= db.to_do(db.SQL_TYPE_SEARCH, sql, (searchkey,))
+    for row in rows:
+        print(f"City Name: {row[0]}, Country: {row[1]}, Code: {row[2]}")
