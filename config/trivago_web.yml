@@ -3,11 +3,14 @@ home_page:
   # https://www.trivago.hk/en-HK/srl/hotels-tokyo-japan?search=200-71462;dr-20240519-20240522;rc-1-2-4-6
   template: 
     url: "https://www.trivago.hk/en-HK/srl/hotels-{city}-{country}?search="
-    param: "{addressid};dr-{checkin}-{checkout};rc-{rooms}-{Adults}{child_ages}"
+    param: "{code};dr-{checkin}-{checkout};rc-{rooms}-{adults}{child_ages}"
     default:
       city: tokyo
       countrym: japan
-      addressid: 200-71462
+      code: 200-71462
+      rooms: 1
+      adults: 2
+      child_ages: ""
 bot_check: ""
 search_item:
   where_to: ""
@@ -30,6 +33,43 @@ logging_path: trivago_scraping\config\logging.yml
 
 output: trivago_scraping\output
 
+edge_options:
+  arguments:
+    - --ignore-certificate-errors
+    - --ignore-ssl-errors
+    - --accept-language=en
+    - --disable-extensions
+    - --disable-popup-blocking
+    - --incognito
+    - --start-maximized
+    - --user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36
+  prefs:
+    first_run_customized: False
+    first_run: False
+    welcome_page_on_startup_enabled: False
+    welcome_page_enabled: False
+
+chrome_options:
+  arguments:
+    - --ignore-certificate-errors
+    - --ignore-ssl-errors
+    - --accept-language=en
+    - --disable-extensions
+    - --disable-popup-blocking
+    - --incognito
+    - --start-maximized
+    - --user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36
+  prefs:
+    profile.default_content_setting_values.notifications: 2
+    credentials_enable_service: False
+    profile.password_manager_enabled: False
+    browser: 
+      first_run_tabs: []
+    first_run_customized: False
+    first_run: False
+    welcome_page_on_startup_enabled: False
+    welcome_page_enabled: False
+    
 db:
   path: trivago_scraping\res\trivago.db
   tables:

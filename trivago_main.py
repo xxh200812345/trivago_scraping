@@ -8,8 +8,7 @@ def logging_init():
 
 
 def start(tasks: list):
-    logger = TaLog().logger
-    logger.info(f"start query")
+    TaLog().info(f"start query")
     # 开始执行爬虫
     for task in tasks:
         TaLogin().do_task(task)

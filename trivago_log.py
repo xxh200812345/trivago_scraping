@@ -8,12 +8,15 @@ from trivago_tool import TaConfig
 
 class TaLog:
     _instance = None
-    logger = None
+    info = None
+    error = None
 
     def __new__(cls, *args, **kwargs):
         if not cls._instance:
             cls._instance = super(TaLog, cls).__new__(cls)
-            cls._instance.logger = logging_init()
+            logger = logging_init()
+            cls._instance.info = logger.info
+            cls._instance.error = logger.error
         return cls._instance
 
 
