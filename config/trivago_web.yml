@@ -2,11 +2,10 @@ home_page:
   hk: "https://www.trivago.hk/en-HK/lm"
   # https://www.trivago.hk/en-HK/srl/hotels-tokyo-japan?search=200-71462;dr-20240519-20240522;rc-1-2-4-6
   template: 
-    url: "https://www.trivago.hk/en-HK/srl/hotels-{city}-{country}?search="
+    url: "https://www.trivago.hk/en-HK/srl/hotels-{city_country}?search="
     param: "{code};dr-{checkin}-{checkout};rc-{rooms}-{adults}{child_ages}"
     default:
-      city: tokyo
-      countrym: japan
+      city_country: tokyo-japan
       code: 200-71462
       rooms: 1
       adults: 2
@@ -69,7 +68,7 @@ chrome_options:
     first_run: False
     welcome_page_on_startup_enabled: False
     welcome_page_enabled: False
-    
+
 db:
   path: trivago_scraping\res\trivago.db
   tables:
@@ -77,14 +76,13 @@ db:
       create: |
         CREATE TABLE IF NOT EXISTS city (
             search_key TEXT UNIQUE,
-            city_name TEXT,
-            country TEXT,
+            city_country TEXT,
             code TEXT,
             add_time TEXT
         )
       insert: |
-        INSERT INTO city (search_key, city_name, country, code, add_time)
-        VALUES (?, ?, ?, ?, ?)
+        INSERT INTO city (search_key, city_country, code, add_time)
+        VALUES (?, ?, ?, ?)
       delete: |
         DELETE FROM city
         WHERE search_key = ?;
@@ -94,13 +92,12 @@ db:
         WHERE search_key = ?;
       update: |
         UPDATE city
-        SET city_name = ?, 
-            country = ?, 
+        SET city_country = ?, 
             code = ?, 
             add_time = ?
         WHERE search_key = ?;
       search: |
-        SELECT city_name, country, code FROM city
+        SELECT city_country, code FROM city
         WHERE search_key = ?;
 
 

@@ -7,7 +7,7 @@ def logging_init():
     pass
 
 
-def start(tasks: list):
+def start(tasks):
     TaLog().info(f"start query")
     # 开始执行爬虫
     for task in tasks:
@@ -23,7 +23,7 @@ def main():
     # 开始执行爬虫
     start(tasks)
     # 关闭浏览器
-    _driver.close()
+    _driver.quit()
 
 if __name__ == "__main__":  # ⼊⼝函数
     # 初始化
