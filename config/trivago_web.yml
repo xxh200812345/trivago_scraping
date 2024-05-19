@@ -10,19 +10,10 @@ home_page:
       rooms: 1
       adults: 2
       child_ages: ""
-bot_check: ""
-search_item:
-  where_to: ""
-  checkin: ""
-  checkout: ""
-  guestandrooms: ""
+
 language: English
-currency: HKD
-advertise: 
-  dialog:
-    data-testid: "modal-container"
-    closeButton:
-      class: IdleNotification_closeButton__Hlj6a
+
+loading_wait_time: 3
 
 searchlist: 
   name: searchlist.xlsx
@@ -30,7 +21,34 @@ searchlist:
 
 logging_path: trivago_scraping\config\logging.yml
 
-output: trivago_scraping\output
+output:
+  path: trivago_scraping\output
+  titles:
+    - Page-No
+    - City
+    - Hotelname
+    - Recommend booking
+    - price
+    - Star
+    - Other1 booking
+    - Other1 price
+    - lowest booking
+    - lowest price
+    - Other3 booking
+    - Other3 price
+    - Checkin
+    - Checkout
+    - Currency
+
+selectors:
+  Hotelname: './/*[@data-testid="details-section"]//*[@data-testid="item-name"]//span'
+  Star: './/*[@data-testid="star-rating"]//meta'
+  Recommend booking: './/*[@data-testid="recommended-price-partner"]'
+  price: './/*[@data-testid="clickout-area"]//*[@data-testid="recommended-price"]'
+  Other1 booking: './/*[@data-testid="alternative-deal"]//*[@itemprop="name"]'
+  Other1 price: './/*[@data-testid="alternative-deal"]//*[@itemprop="price"]'
+  lowest booking: './/*[@data-testid="cheapest-price-label"]/span/span[3]'
+  lowest price: './/*[@data-testid="cheapest-price-label"]//*[@itemprop="price"]'
 
 edge_options:
   arguments:
@@ -100,8 +118,11 @@ db:
         SELECT city_country, code FROM city
         WHERE search_key = ?;
 
-
+currency_list:
+  - name: USD
+    sign: $
         
+
 
 
 

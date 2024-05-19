@@ -7,13 +7,6 @@ def logging_init():
     pass
 
 
-def start(tasks):
-    TaLog().info(f"start query")
-    # 开始执行爬虫
-    for task in tasks:
-        TaLogin().do_task(task)
-
-
 def main():
     _config = TaConfig().config
     _driver = TaLogin().driver
@@ -21,7 +14,7 @@ def main():
     searchlist_path = _config["searchlist"]["path"] + _config["searchlist"]["name"]
     tasks = TaTask.get_tasks(searchlist_path)
     # 开始执行爬虫
-    start(tasks)
+    TaLogin().start(tasks)
     # 关闭浏览器
     _driver.quit()
 

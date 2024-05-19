@@ -28,6 +28,10 @@ class TaLogin:
     _instance = None
     driver: wd = None
     current_task: TaTask = None
+    current_max_page = 1
+    current_page = 1
+    loading_wait_time = 1
+    output_path = ""
 
     def __new__(cls, *args, **kwargs):
         if not cls._instance:
@@ -62,79 +66,101 @@ class TaLogin:
 
         return driver
 
-    def driver_init_edge(self):
+    def set_star(self):
+        _driver = self.driver
 
-        _config = TaConfig().config
-        TaLog().info(f"启动edge浏览控制器")
-        op = webdriver.EdgeOptions()
+        # 获取当前星级 'Remove\n3,4 Stars'
 
-        # 添加浏览器参数
-        for argument in _config["edge_options"]["arguments"]:
-            op.add_argument(argument)
-
-        # 设置首选项
-        for key, value in _config["edge_options"]["prefs"].items():
-            op.add_experimental_option(key, value)
-
-        driver = webdriver.Edge(
-            service=EdgeService(EdgeChromiumDriverManager().install()), options=op
-        )
-        driver.execute_script("window.open('','_blank');")
-        driver.switch_to.window(driver.window_handles[0])
-        return driver
-
-    def has_element(self, byX, value):
-        """
-        检查元素是否存在
-        """
+        selector = '//*[contains(@class,"HorizontalScrollRow_wrapper__MUuNp")]'
         try:
-            self.driver.find_element(byX, value)
-            return True
+            star_info_element = _driver.find_element(By.XPATH, selector)
+            star_info = star_info_element.text
         except:
-            return False
+            star_info = ""
 
-    def is_bot_wait(self):
-        """
-        是否被判定为机器人,True 是机器人
-        """
-        element = self.driver.find_element(By.XPATH, "//div[@id='sec-overlay']")
-        return element.is_displayed()
+        # 非当前星级的情况，设置成当前星级
+        star = str(self.current_task.star)
+        if not f"{star} Stars" in star_info:
+            actions = ActionChains(_driver)
+            # click filters
+            selector = '//button[@name="more_filters"]'
+            filters_btn = wait_find_element_xpath(selector)
+            actions.move_to_element(filters_btn).click().perform()
 
-    def bot_check_wait(self, sleeptime=1):
-        """
-        如果被判定为机器人输入，等待
-        """
+            # reset
+            selector = '//button[@data-testid="filters-popover-reset-button"]'
+            reset_btn = _driver.find_element(By.XPATH, selector)
+            if not reset_btn.get_attribute("disabled"):
+                actions.move_to_element(reset_btn).click().perform()
 
-        stime = 0
-        time.sleep(sleeptime)
-        if self.is_bot_wait():
-            TaLog().info("反爬虫中...")
-        # $x("")
-        while self.is_bot_wait():
-            time.sleep(1)
-            # 超过31s依旧还在读取
-            if stime > 31:
-                self.driver.refresh()
-                TaLog().info("超过31s依旧还在读取,刷新页面")
-                stime = 0
-                time.sleep(6)
-            stime += 1
-        if stime > 0:
-            TaLog().info("反爬虫结束")
+            # set star
+            selector = f'//button[@data-testid="{star}-star-hotels-filter"]'
+            star_btn = _driver.find_element(By.XPATH, selector)
+            actions.move_to_element(star_btn).click().perform()
+
+            # apply
+            selector = '//button[@data-testid="filters-popover-apply-button"]'
+            apply_btn = _driver.find_element(By.XPATH, selector)
+            actions.move_to_element(apply_btn).click().perform()
+
+    def set_currency(self):
+        _driver = self.driver
+        _config = TaConfig().config
+
+        # 获取当前货币符号
+        selector = '//header//*[@data-testid="header-localization-menu"]/span[2]/span'
+        current_sign_element = wait_find_element_xpath(selector)
+        current_sign = current_sign_element.text
+        TaLog().info(f"{self.current_task.log_key}localization: {current_sign}")
+        current_sign = current_sign.split("·")[1]
+        current_sign = current_sign.strip()
+
+        # 用货币符号找到对应的货币缩写
+        current_name = ""
+        currency_list = _config["currency_list"]
+        for currency in currency_list:
+            current_name = currency["name"]
+            sign = currency["sign"]
+            if sign == current_sign:
+                break
+
+        # 如果货币和搜索数据不一致，则改成一致
+        actions = ActionChains(_driver)
+        if current_name != self.current_task.currency:
+            TaLog().info(
+                f"{self.current_task.log_key}currency: {current_sign} -> {self.current_task.currency}"
+            )
+            selector = '//header//*[@data-testid="header-localization-menu"]'
+            header_localization_menu_btn = wait_find_element_xpath(selector)
+            actions.move_to_element(header_localization_menu_btn).click().perform()
+
+            selector = f'//*[@id="currency-select"]'
+            currency_select = wait_find_element_xpath(selector)
+            actions.move_to_element(currency_select).click().perform()
+
+            # 设置成task中的货币
+            select = Select(currency_select)
+            select.select_by_value(self.current_task.currency)
+
+            selector = '//dialog//button[@type="submit"]'
+            dialog_apply_btn = wait_find_element_xpath(selector)
+            actions.move_to_element(dialog_apply_btn).click().perform()
 
     def do_task(self, task: TaTask):
         """
         单独处理每一个task
         """
-        self.current_task = task
         _config = TaConfig().config
-        _driver = self.driver
 
+        self.loading_wait_time = _config["loading_wait_time"]
+        self.current_task = task
         TaLog().info(f"{self.current_task.log_key}start query")
         TaLog().info(f"{self.current_task.log_key}{self.current_task}")
 
         if self.current_task.state is TaTask.STATE_NORMAL:
             self.goto_url()
+            self.current_page = 1
+            self.get_accommodation_list()
 
         self.current_task.state = TaTask.STATE_OVER
         TaLog().info(f"{self.current_task.log_key}end query")
@@ -169,31 +195,90 @@ class TaLogin:
             replace_values["adults"] = "2"
         url = make_url(temp_url, replace_values)
         self.current_task.url = url
-        self.get_accommodation_list()
 
     def get_accommodation_list(self):
+        """
+        初始化指定条件下第一页下载列表
+        """
         _driver = TaLogin().driver
 
+        TaLog().info(f"{self.current_task.log_key}初始化下载环境")
         TaLog().info(f"{self.current_task.log_key}{self.current_task.url}")
         _driver.get(self.current_task.url)
 
-        wait = WebDriverWait(_driver, 10)
-        # 找到指定的div元素
+        # accommodations-counter
         selector = '//*[@data-testid="loading-animation-accommodations-counter"]'
-        hotels_count = wait.until(
-            EC.visibility_of_element_located((By.XPATH, selector))
-        )
+        hotels_count = wait_find_element_xpath(selector)
         TaLog().info(f"{self.current_task.log_key}{hotels_count.text}")
 
+        # 关闭日期选择
+        close_calendar()
+
+        # 设置货币
+        self.set_currency()
+        # 设置星级
+        self.set_star()
+
+        # 广告商列表
+        selector = '//*[@data-testid="accommodation-list"]'
+        wait_find_element_xpath(selector)
+
+        # 最大页数
+        try:
+            if self.current_page == 1:
+                selector = '//*[@data-testid="pagination"]/li'
+                selector = '//*[@data-testid="pagination"]'
+                pagination_ol = _driver.find_element(By.XPATH, selector)
+                pages = pagination_ol.text.strip().split("\n")
+
+                self.current_max_page = 1
+                if len(pages) > 1:
+                    self.current_max_page = int(pages[-1])
+        except:
+            self.current_max_page = 1
+
+        for i in range(self.current_page, self.current_max_page + 1):
+            self.current_page = i
+            self.accommodation_list_loop()
+
+    def accommodation_list_loop(self):
+        """
+        获取指定页面的全部广告商数据
+        """
+        _driver = TaLogin().driver
+
+        url = self.current_task.url
+        if self.current_max_page != 1 and self.current_page <= self.current_max_page:
+            url += f";pa-{str(self.current_page)}"
+        page_info = f"page({str(self.current_page)}/{str(self.current_max_page)})"
+        TaLog().info(f"{self.current_task.log_key}开始下载数据,{page_info}")
+        TaLog().info(f"{self.current_task.log_key}{url}")
+
+        time.sleep(self.loading_wait_time)
+        if self.current_page != 1:
+            _driver.get(url)
+
+        # 广告商列表
+        selector = '//*[@data-testid="accommodation-list"]'
+        wait_find_element_xpath(selector)
+        
+
         selector = '//*[@data-testid="accommodation-list"]//*[@data-testid="accommodation-list-element"]'
-        accommodation_list = _driver.find_elements(By.XPATH, selector)
+        accommodation_list = _driver.find_elements(By.XPATH,selector)
+
         index = 0
         outputs = []
         for accommodation in accommodation_list:
             index += 1
-            TaLog().info(f"{self.current_task.log_key}accommodation: {index}")
             output = get_accommodation_info(accommodation)
+            output["City"] = self.current_task.cityname
+            output["Checkin"] = self.current_task.checkin
+            output["Checkout"] = self.current_task.checkout
+            output["Currency"] = self.current_task.currency
+
+            TaLog().info(f"{self.current_task.log_key}{index}: {output}")
             outputs.append(output)
+        self.current_task.output(self.output_path, outputs)
 
     def get_code(self):
         temp_url = self.default_url()
@@ -203,21 +288,14 @@ class TaLogin:
 
         # 创建ActionChains对象
         actions = ActionChains(_driver)
-        wait = WebDriverWait(_driver, 10)
         default_url = _driver.current_url
 
         # 找到指定的div元素
         selector = '//*[@role="combobox"]//*[@id="input-auto-complete"]'
         # 获取城市输入框
-        destination_input = wait.until(
-            EC.visibility_of_element_located((By.XPATH, selector))
-        )
-        try:
-            selector = '//button[@data-testid="calendar-button-close"]'
-            calendar_button_close = _driver.find_element(By.XPATH, selector)
-            actions.move_to_element(calendar_button_close).click().perform()
-        except:
-            pass
+        destination_input = wait_find_element_xpath(selector)
+
+        close_calendar()
 
         # 模拟鼠标移动到div元素并点击
         actions.move_to_element(destination_input).click().perform()
@@ -227,9 +305,7 @@ class TaLogin:
 
         # 点击第一个选项
         selector = '//*[@id="suggestion-list"]//*[@role="listbox"]//li[1]'
-        first_button = wait.until(
-            EC.visibility_of_element_located((By.XPATH, selector))
-        )
+        first_button = wait_find_element_xpath(selector)
 
         actions.move_to_element(first_button).click().perform()
         wait_time = 10
@@ -287,8 +363,35 @@ class TaLogin:
         temp_url = make_url(temp_url, replace_values)
         return temp_url
 
+    def start(self, tasks: list[TaTask]):
+        TaLog().info(f"start query")
 
-def make_url(temp_url, data):
+        self.output_path =  TaTask.output_create()
+
+        # 开始执行爬虫
+        for task in tasks:
+            TaLogin().do_task(task)
+
+def close_calendar():
+    _driver = TaLogin().driver
+    actions = ActionChains(_driver)
+    try:
+        selector = '//button[@data-testid="calendar-button-close"]'
+        calendar_button_close = _driver.find_element(By.XPATH, selector)
+        actions.move_to_element(calendar_button_close).click().perform()
+    except:
+        pass
+
+
+def wait_find_element_xpath(selector, waittime=10):
+    _driver = TaLogin().driver
+    wait = WebDriverWait(_driver, waittime)
+    # 找到指定的div元素
+    element = wait.until(EC.visibility_of_element_located((By.XPATH, selector)))
+    return element
+
+
+def make_url(temp_url: str, data: dict):
     # 使用字典的 items() 方法和循环来替换占位符
     for key, value in data.items():
         placeholder = f"{{{key}}}"
@@ -296,76 +399,50 @@ def make_url(temp_url, data):
     return temp_url
 
 
-def get_accommodation_info(accommodation: webelement):
+def get_accommodation_info(accommodation: webelement.WebElement):
     output = {}
-    element = accommodation.find_element(
-        By.XPATH,
-        './/*[@data-testid="details-section"]//*[@data-testid="item-name"]//span',
-    )
-    output["Hotelname"] = element.text
-    try:
-        element = accommodation.find_element(
-            By.XPATH, './/*[@data-testid="star-rating"]//meta'
-        )
-        output["Star"] = element.get_attribute("content")
-    except:
-        output["Star"] = ""
 
-    try:
-        element = accommodation.find_element(
-            By.XPATH, './/*[@data-testid="recommended-price-partner"]'
-        )
-        output["Recommend booking"] = element.text
-        element = accommodation.find_element(
-            By.XPATH,
-            './/*[@data-testid="clickout-area"]//*[@data-testid="recommended-price"]',
-        )
-        output["price"] = element.text
-    except:
-        output["Recommend booking"] = ""
-        output["price"] = ""
+    _config = TaConfig().config
+    selectors = _config['selectors']
 
-    try:
-        element = accommodation.find_element(
-            By.XPATH, './/*[@data-testid="alternative-deal"]//*[@itemprop="name"]'
-        )
-        output["Other1 booking"] = element.text
-        element = accommodation.find_element(
-            By.XPATH, './/*[@data-testid="alternative-deal"]//*[@itemprop="price"]'
-        )
-        output["Other1 price"] = element.text
-    except:
-        output["Other1 booking"] = ""
-        output["Other1 price"] = ""
+    for output_name, selector in selectors.items():
+        try:
+            element = accommodation.find_element(By.XPATH, selector)
+            if output_name == "Star":
+                output[output_name] = element.get_attribute("content")
+            else:
+                output[output_name] = element.text
+        except:
+            output[output_name] = ""
 
-    try:
-        element = accommodation.find_element(
-            By.XPATH, './/*[@data-testid="cheapest-price-label"]/span/span[3]'
-        )
-        output["lowest booking"] = element.text
-        element = accommodation.find_element(
-            By.XPATH, './/*[@data-testid="cheapest-price-label"]//*[@itemprop="price"]'
-        )
-        output["lowest price"] = element.text
-    except:
+    if not output["lowest booking"]:
         output["lowest booking"] = output["Recommend booking"]
+    if not output["lowest price"]:
         output["lowest price"] = output["price"]
-    TaLog().info(output)
+
     return output
 
 
 def test():
     # $x('//*[@data-testid="modal-container"]//button')[0] 关闭注册窗口
     # 示例模板 URL
-    temp_url = "https://www.trivago.hk/en-HK/srl/hotels-cannes-france?search=105-1318;200-23033;dr-20240520-20240525;rc-1-2"
+    temp_url = "https://www.trivago.hk/en-HK/srl/hotels-tokyo-japan?search=200-71462;dr-20240617-20240618;rc-1-2-4-6"
 
     _driver = TaLogin().driver
 
     _driver.get(temp_url)
-    wait = WebDriverWait(_driver, 10)
-    # 找到指定的div元素
-    selector = '//*[@data-testid="loading-animation-accommodations-counter"]'
-    hotels_count = wait.until(EC.visibility_of_element_located((By.XPATH, selector)))
-    TaLog().info(hotels_count.text)
+
+    actions = ActionChains(_driver)
+
+    # click filters
+    selector = '//button[@name="more_filters"]'
+    filters_btn = wait_find_element_xpath(selector)
+
+    close_calendar()
+
+    selector = '//*[@data-testid="pagination"]'
+    pagination_ol = _driver.find_element(By.XPATH, selector)
+    pages = pagination_ol.text.strip().split("\n")
+    print(pages)
 
     _driver.quit()

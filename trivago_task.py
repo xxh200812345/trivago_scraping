@@ -1,8 +1,11 @@
 import openpyxl as px
+from openpyxl import Workbook
 import re
+from datetime import datetime
 
 from trivago_log import TaLog
 from trivago_tool import TaConfig
+import openpyxl
 
 
 class TaTask:
@@ -46,7 +49,6 @@ class TaTask:
             TaLog().error(f"{self.log_key}: {cell}")
 
             self.state = TaTask.STATE_ERROR
-
 
     # print
     def __repr__(self):
@@ -99,8 +101,78 @@ class TaTask:
         star = str(star)
         return star
 
+    @staticmethod
+    def output_create():
+        _config = TaConfig().config
+        filename = datetime.now().strftime("%Y%m%d%H%M")
+        output_dir = _config["output"]["path"]
+        output_file = f"{output_dir}/{filename}.xlsx"
+        wb = Workbook()
+        # 获取活动工作表
+        ws = wb.active
+
+        # 设置工作表标题
+        ws.title = "Sheet1"
+
+        # 将标题写入第一行
+        titles = _config["output"]["titles"]
+        for col_num, title in enumerate(titles, start=1):
+            ws.cell(row=1, column=col_num, value=title)
+        wb.save(output_file)
+        return output_file
+
+    @staticmethod
+    def output(file_path, outputs: list[dict]):
+        # 取searchlist数据
+        wb = px.load_workbook(file_path)
+        ws = wb.active
+
+        tasks = []
+        # Print the row data
+        for index, row in enumerate(ws.iter_rows(min_row=2)):
+            row_data = []
+            for cell in row:
+                row_data.append(cell.value)
+            _task = TaTask(row_data, (index + 2))
+            tasks.append(_task)
+        # 找到最后一行
+        last_row = ws.max_row + 1
+
+        _config = TaConfig().config
+        titles = _config["output"]["titles"]
+        titles_dict = {title: index + 1 for index, title in enumerate(titles)}
+
+        for output in outputs:
+
+            # 将新数据写入最后一行
+            for _, title in enumerate(output, start=1):
+                ws.cell(
+                    row=last_row,
+                    column=titles_dict.get(title),
+                    value=output.get(title, ""),
+                )
+
+            last_row += 1
+
+        # 保存工作簿
+        wb.save(file_path)
+
+
 def test():
-    searchlist = TaConfig().config["searchlist"]
-    tasks = TaTask.get_tasks(searchlist["path"] + searchlist["name"])
-    for task in tasks:
-        print(task)
+    output_path = TaTask.output_create()
+    output = [
+        {
+            "Hotelname": "APA Keisei Ueno Ekimae",
+            "Star": "3",
+            "Recommend booking": "Booking.com",
+            "price": "",
+            "Other1 booking": "Japanican.com",
+            "Other1 price": "$1,559",
+            "lowest booking": "per night on Japanican.com",
+            "lowest price": "$1,559",
+        }
+    ]
+    TaTask.output(output_path, output)
+
+
+test()
