@@ -169,13 +169,12 @@ class TaLogin:
         hotels_count = wait_find_element_xpath(selector)
         TaLog().info(f"{self.current_task.log_key}{hotels_count.text}")
 
-        
         # 关闭日期选择
         close_calendar()
 
         # 设置货币
         self.set_currency()
-        
+
     def get_accommodation_list(self):
         """
         初始化指定条件下第一页下载列表

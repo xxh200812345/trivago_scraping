@@ -10,12 +10,12 @@ from openpyxl.styles import NamedStyle
 
 
 class TaTask:
-    cityname = None
+    cityname: str = None
     checkin: datetime = None
     checkout: datetime = None
-    roomtype = None
-    currency = None
-    star = None
+    roomtype: str = None
+    currency: str = None
+    star: int = None
     log_key = None
     url = None
     ROOM_TYPE_SINGLE = "Single room"
@@ -33,7 +33,7 @@ class TaTask:
                 self.cityname,
                 self.checkin,
                 self.checkout,
-                _,
+                self.roomtype,
                 self.currency,
                 self.star,
             ) = cell
@@ -42,7 +42,7 @@ class TaTask:
 
         except Exception as e:
             TaLog().error(f"{self.log_key}TaTask init error: {e}")
-            TaLog().error(f"{self.log_key}: {cell}")
+            TaLog().error(f"{self.log_key}{cell}")
 
             self.state = TaTask.STATE_ERROR
 
@@ -130,7 +130,7 @@ class TaTask:
 
     def checkout_for_url(self):
         return self.checkout.strftime("%Y%m%d")
-    
+
     def star_for_url(self):
         config = TaConfig().config
         stars = config["stars"]
