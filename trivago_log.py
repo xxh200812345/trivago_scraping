@@ -25,9 +25,9 @@ class TaLog:
 
 def logging_init():
     # 获取配置
-    _config = TaConfig().config
+    config = TaConfig().config
     # 打开配置文件
-    with open(file=_config["logging_path"], mode="r", encoding="utf-8") as file:
+    with open(file=config["logging_path"], mode="r", encoding="utf-8") as file:
         logging_yaml = yaml.load(stream=file, Loader=yaml.FullLoader)
         # 配置logging日志
         logging.config.dictConfig(config=logging_yaml)

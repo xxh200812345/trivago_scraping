@@ -22,10 +22,10 @@ class TaDB:
         return cls._instance
 
     def init(self):
-        _config = TaConfig().config
+        config = TaConfig().config
 
-        self.db_path = _config["db"]["path"]
-        self.tables = _config["db"]["tables"]
+        self.db_path = config["db"]["path"]
+        self.tables = config["db"]["tables"]
         
         db = TaDB()
         sql = db.tables["city"][db.SQL_TYPE_CREATE]
