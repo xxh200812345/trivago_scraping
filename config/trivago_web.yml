@@ -17,12 +17,12 @@ loading_wait_time: 3
 
 searchlist: 
   name: searchlist.xlsx
-  path: trivago_scraping\res\
+  path: res\
 
-logging_path: trivago_scraping\config\logging.yml
+logging_path: config\logging.yml
 
 output:
-  path: trivago_scraping\output
+  path: output
   titles:
     - Page-No
     - City
@@ -93,7 +93,7 @@ chrome_options:
     welcome_page_enabled: False
 
 db:
-  path: trivago_scraping\res\trivago.db
+  path: res\trivago.db
   tables:
     city:
       create: |

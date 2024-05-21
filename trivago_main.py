@@ -1,11 +1,15 @@
+import os
+
 from trivago_task import TaTask
 from trivago_login import TaLogin
 from trivago_tool import TaConfig
 
-
-def logging_init():
-    pass
-
+# 获取当前脚本所在的目录
+current_file_path = os.path.abspath(__file__)
+current_dir = os.path.dirname(current_file_path)
+# 设置当前工作目录
+os.chdir(current_dir)
+print(current_dir)
 
 def main():
     config = TaConfig().config
@@ -20,7 +24,5 @@ def main():
 
 
 if __name__ == "__main__":  # ⼊⼝函数
-    # 初始化
-    logging_init()
     # 主逻辑
     main()

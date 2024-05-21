@@ -3,7 +3,7 @@ import yaml
 class TaConfig:
     _instance = None
     # Path to the configuration file
-    CONFIG_PATH = r'trivago_scraping\config\trivago_web.yml'
+    CONFIG_PATH = 'config/trivago_web.yml'
 
     city_dict = {}
    
