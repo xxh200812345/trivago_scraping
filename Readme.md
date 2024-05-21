@@ -19,5 +19,5 @@
 | output | 输入结果文件夹 |
 | log | 日志文件夹 |
 
-# 生成trivago.exe
+# 生成trivago_main.exe
 > python setup.py build
