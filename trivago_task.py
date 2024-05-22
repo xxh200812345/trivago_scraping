@@ -77,7 +77,9 @@ class TaTask:
         config = TaConfig().config
         filename = datetime.now().strftime("%Y%m%d%H%M")
         output_dir = config["output"]["path"]
-        output_file = f"{output_dir}/{filename}.xlsx"
+        TaConfig.ensure_file_exists(output_dir)
+
+        output_file = f"{output_dir}{filename}.xlsx"
         wb = Workbook()
         # 获取活动工作表
         ws = wb.active
@@ -135,11 +137,6 @@ class TaTask:
         config = TaConfig().config
         stars = config["stars"]
         return stars[self.star]
-
-    @staticmethod
-    def price_for_output(price: str):
-        price = price.replace(",", "")
-        return f"US{price}"
 
     @staticmethod
     def count_task_states(tasks: List["TaTask"]) -> dict:

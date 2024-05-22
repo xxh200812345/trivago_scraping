@@ -72,26 +72,26 @@ class TaLogin:
 
         # 获取当前货币符号
         selector = '//header//*[@data-testid="header-localization-menu"]/span[2]/span'
-        current_sign_element = wait_find_element_xpath(selector)
-        current_sign = current_sign_element.text
-        TaLog().info(f"{self.current_task.log_key}localization: {current_sign}")
-        current_sign = current_sign.split("·")[1]
-        current_sign = current_sign.strip()
+        localization_menu_element = wait_find_element_xpath(selector)
+        localization_menu = localization_menu_element.text
+        TaLog().info(f"{self.current_task.log_key}localization-menu: {localization_menu}")
+
 
         # 用货币符号找到对应的货币缩写
-        current_name = ""
-        currency_list = config["currency_list"]
-        for currency in currency_list:
-            current_name = currency["name"]
-            sign = currency["sign"]
-            if sign == current_sign:
-                break
+        currency_dict = config["currency_dict"]
+        current_sign = currency_dict[self.current_task.currency]
+
+        # 判断US$是否在price中
+        selector = '//*[@data-testid="refinement-row"]/div[1]'
+        page_sign_element = wait_find_element_xpath(selector)
+        page_sign = page_sign_element.text
+        page_sign = page_sign.split('\n')[1]
 
         # 如果货币和搜索数据不一致，则改成一致
         actions = ActionChains(driver)
-        if current_name != self.current_task.currency:
+        if current_sign not in page_sign[:3]:
             TaLog().info(
-                f"{self.current_task.log_key}currency: {current_sign} -> {self.current_task.currency}"
+                f"{self.current_task.log_key}currency:  -> {self.current_task.currency}"
             )
             selector = '//header//*[@data-testid="header-localization-menu"]'
             header_localization_menu_btn = wait_find_element_xpath(selector)
@@ -247,12 +247,11 @@ class TaLogin:
         for accommodation in accommodation_list:
             index += 1
             output = get_accommodation_info(accommodation)
-            output["Page-No"] = f"{self.current_page}-{index}"
+            output["Page_No"] = f"{self.current_page}-{index}"
             output["City"] = self.current_task.cityname
             output["Checkin"] = self.current_task.checkin
             output["Checkout"] = self.current_task.checkout
             output["Currency"] = self.current_task.currency
-            output["Star"] = self.current_task.star
 
             TaLog().info(f"{self.current_task.log_key}{index}: {output}")
             outputs.append(output)
@@ -405,23 +404,23 @@ def get_accommodation_info(accommodation: webelement.WebElement):
     output = {}
 
     config = TaConfig().config
-    selectors = config["selectors"]
+    selectors: dict = config["selectors"]
 
     for output_name, selector in selectors.items():
         try:
             element = accommodation.find_element(By.XPATH, selector)
             output[output_name] = element.text
-            if "price" in output_name:
-                price = TaTask.price_for_output(element.text)
-                output[output_name] = price
+
+            if "Star" == output_name:
+                output[output_name] = element.get_attribute("content")
         except:
             output[output_name] = ""
 
-    if not output["lowest booking"]:
-        output["lowest booking"] = output["Recommend booking"]
-    if not output["lowest price"]:
-        output["lowest price"] = output["price"]
-    output["lowest booking"] = output["lowest booking"].replace("per night on ", "")
+    if not output["Lowest booking"]:
+        output["Lowest booking"] = output["Recommend booking"]
+    if not output["Lowest price"]:
+        output["Lowest price"] = output["Price"]
+    output["Lowest booking"] = output["Lowest booking"].replace("per night on ", "")
 
     return output
 

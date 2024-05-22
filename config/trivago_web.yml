@@ -19,23 +19,23 @@ searchlist:
   name: searchlist.xlsx
   path: res\
 
+logging_dir: log\
 logging_path: config\logging.yml
 
 output:
-  path: output
+  path: output\
   titles:
-    - Page-No
+    - Page_No
     - City
     - Hotelname
     - Recommend booking
-    - price
+    - Price
     - Star
+    - Type
     - Other1 booking
     - Other1 price
-    - lowest booking
-    - lowest price
-    - Other3 booking
-    - Other3 price
+    - Lowest booking
+    - Lowest price
     - Checkin
     - Checkout
     - Currency
@@ -47,13 +47,14 @@ stars:
 
 selectors:
   Hotelname: './/*[@data-testid="details-section"]//*[@data-testid="item-name"]//span'
-  # Star: './/*[@data-testid="star-rating"]//meta'
+  Star: './/*[@data-testid="star-rating"]//meta'
+  Type: './/*[@data-testid="accommodation-type"]'
   Recommend booking: './/*[@data-testid="recommended-price-partner"]'
-  price: './/*[@data-testid="clickout-area"]//*[@data-testid="recommended-price"]'
+  Price: './/*[@data-testid="clickout-area"]//*[@data-testid="recommended-price"]'
   Other1 booking: './/*[contains(@data-testid,"alternative-deal")]//*[@itemprop="name"]'
   Other1 price: './/*[contains(@data-testid,"alternative-deal")]//*[@itemprop="price"]'
-  lowest booking: './/*[@data-testid="cheapest-price-label"]/span/span[3]'
-  lowest price: './/*[@data-testid="cheapest-price-label"]//*[@itemprop="price"]'
+  Lowest booking: './/*[@data-testid="cheapest-price-label"]/span/span[3]'
+  Lowest price: './/*[@data-testid="cheapest-price-label"]//*[@itemprop="price"]'
 
 edge_options:
   arguments:
@@ -123,9 +124,9 @@ db:
         SELECT city_country, code FROM city
         WHERE search_key = ?;
 
-currency_list:
-  - name: USD
-    sign: $
+currency_dict:
+  USD: US$
+  HKD: $
         
 
 

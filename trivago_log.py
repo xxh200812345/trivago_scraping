@@ -26,6 +26,8 @@ class TaLog:
 def logging_init():
     # 获取配置
     config = TaConfig().config
+    TaConfig.ensure_file_exists(config["logging_dir"])
+    
     # 打开配置文件
     with open(file=config["logging_path"], mode="r", encoding="utf-8") as file:
         logging_yaml = yaml.load(stream=file, Loader=yaml.FullLoader)

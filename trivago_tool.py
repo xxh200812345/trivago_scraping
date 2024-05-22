@@ -1,4 +1,5 @@
 import yaml
+import os
 
 class TaConfig:
     _instance = None
@@ -23,6 +24,17 @@ class TaConfig:
         with open(path, 'r') as stream:
             return yaml.safe_load(stream)
 
+    @staticmethod
+    def ensure_file_exists(file_path):
+        """
+        Ensure that the specified file path exists. If the file or directories do not exist, create them.
+
+        :param file_path: The path of the file to check or create.
+        """
+        # 检查文件路径是否存在
+        if not os.path.exists(file_path):
+            # 如果文件路径不存在，则创建文件夹（如果需要的话）
+            os.makedirs(os.path.dirname(file_path), exist_ok=True)
 
 
 
