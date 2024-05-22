@@ -1,11 +1,11 @@
 # 使用方法
 1. 需要chrome浏览器
-2. chrome浏览器会自动打开，并自动打开trivago网页，进行搜索
+2. 下载解压 `res\exe.win-amd64-3.12.rar` 压缩包，双击执行`trivago.exe`
+3. chrome浏览器会自动打开，并自动打开trivago网页，进行搜索
    （爬虫工具，会根据`res/searchlist.xlsx`的条件，逐条搜索。
-3. `log/info.log` 里可以查看搜索过程。
-4. 目前在处理第几行检索可以参考`处理中log`的`line[000005]`，编号对应检索条件的行号。搜索结束参考`处理结果log`。
-5. 搜索结果会保存在`output/{日期}.xlsx`里面
-6. 下载解压 `res\exe.win-amd64-3.12.rar` 压缩包，双击执行`trivago.exe`
+4. `log/info.log` 里可以查看搜索过程。
+5. 目前在处理第几行检索可以参考`处理中log`的`line[000005]`，编号对应检索条件的行号。搜索结束参考`处理结果log`。
+6. 搜索结果会保存在`output/{日期时分}.xlsx`里面
 
 
 # 参考
