@@ -63,7 +63,8 @@ class TaTask:
             for cell in row:
                 row_data.append(cell.value)
             _task = TaTask(row_data, (index + 2))
-            tasks.append(_task)
+            if _task.cityname != None:
+                tasks.append(_task)
         return tasks
 
     def check_roomtype(self, roomtype: str):

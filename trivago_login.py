@@ -160,9 +160,9 @@ class TaLogin:
         url = make_url(temp_url, replace_values)
         self.current_task.url = url
 
-    def open_url(self):
+    def open_url(self, url):
         driver = TaLogin().driver
-        driver.get(self.current_task.url)
+        driver.get(url)
 
         # accommodations-counter
         selector = '//*[@data-testid="loading-animation-accommodations-counter"]'
@@ -184,7 +184,7 @@ class TaLogin:
         TaLog().info(f"{self.current_task.log_key}初始化下载环境")
         TaLog().info(f"{self.current_task.log_key}{self.current_task.url}")
 
-        self.open_url()
+        self.open_url(self.current_task.url)
 
         # 广告商列表
         selector = '//*[@data-testid="accommodation-list"]'
@@ -217,12 +217,11 @@ class TaLogin:
         url = self.current_task.url
         if self.current_max_page != 1 and self.current_page <= self.current_max_page:
             url += f";pa-{str(self.current_page)}"
-        self.current_task.url=url
         page_info = f"page({str(self.current_page)}/{str(self.current_max_page)})"
         TaLog().info(f"{self.current_task.log_key}开始下载数据,{page_info}")
-        TaLog().info(f"{self.current_task.log_key}{self.current_task.url}")
+        TaLog().info(f"{self.current_task.log_key}{url}")
 
-        self.open_url()
+        self.open_url(url)
 
         time.sleep(self.loading_wait_time)
 
