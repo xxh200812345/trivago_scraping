@@ -217,9 +217,10 @@ class TaLogin:
         url = self.current_task.url
         if self.current_max_page != 1 and self.current_page <= self.current_max_page:
             url += f";pa-{str(self.current_page)}"
+        self.current_task.url=url
         page_info = f"page({str(self.current_page)}/{str(self.current_max_page)})"
         TaLog().info(f"{self.current_task.log_key}开始下载数据,{page_info}")
-        TaLog().info(f"{self.current_task.log_key}{url}")
+        TaLog().info(f"{self.current_task.log_key}{self.current_task.url}")
 
         self.open_url()
 
