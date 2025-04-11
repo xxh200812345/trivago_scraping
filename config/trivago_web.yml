@@ -65,6 +65,7 @@ edge_options:
     - --disable-popup-blocking
     - --incognito
     - --start-maximized
+    - --lang=en-HK
     - --user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36
   prefs:
     first_run_customized: False
@@ -81,6 +82,7 @@ chrome_options:
     - --disable-popup-blocking
     - --incognito
     - --start-maximized
+    - --lang=en-HK
     - --user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36
   prefs:
     profile.default_content_setting_values.notifications: 2
@@ -125,8 +127,8 @@ db:
         WHERE search_key = ?;
 
 currency_dict:
-  USD: US$
-  HKD: $
+  USD: $
+  HKD: HK$
         
 
 

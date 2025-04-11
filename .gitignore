@@ -2,3 +2,5 @@ ts-env/
 build/
 output/
 *.log
+__pycache__/
+*.pyc

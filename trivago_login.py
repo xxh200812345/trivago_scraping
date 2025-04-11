@@ -8,20 +8,16 @@ from trivago_db import TaDB
 
 from selenium import webdriver
 from selenium.webdriver.chrome.webdriver import WebDriver as wd
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.common.by import By
-from selenium.common.exceptions import WebDriverException
+from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.remote import webelement
 
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.service import Service as ChromeService
-
-from webdriver_manager.microsoft import EdgeChromiumDriverManager
-from selenium.webdriver.edge.service import Service as EdgeService
 
 
 class TaLogin:
@@ -81,15 +77,17 @@ class TaLogin:
         currency_dict = config["currency_dict"]
         current_sign = currency_dict[self.current_task.currency]
 
-        # 判断US$是否在price中
-        selector = '//*[@data-testid="refinement-row"]/div[1]'
-        page_sign_element = wait_find_element_xpath(selector)
-        page_sign = page_sign_element.text
-        page_sign = page_sign.split('\n')[1]
+        try:        
+            selector = '(//*[@data-testid="expected-price"])[1]/span/b'
+            page_sign_element = wait_find_element_xpath(selector)
+            page_sign = page_sign_element.text
+        except Exception as e:
+            TaLog().info(f"{self.current_task.log_key}Failed to find span/b inside expected-price: {e}")
+            return
 
         # 如果货币和搜索数据不一致，则改成一致
         actions = ActionChains(driver)
-        if current_sign not in page_sign[:3]:
+        if current_sign not in page_sign[:len(current_sign)]:
             TaLog().info(
                 f"{self.current_task.log_key}currency:  -> {self.current_task.currency}"
             )
@@ -387,9 +385,14 @@ def close_calendar():
 def wait_find_element_xpath(selector, waittime=10):
     driver = TaLogin().driver
     wait = WebDriverWait(driver, waittime)
-    # 找到指定的div元素
-    element = wait.until(EC.visibility_of_element_located((By.XPATH, selector)))
-    return element
+    try:
+        # 等待元素可见
+        element = wait.until(EC.visibility_of_element_located((By.XPATH, selector)))
+        return element
+    except TimeoutException:
+        TaLog().error(f"[ERROR] Timeout after {waittime}s waiting for XPath: {selector}")
+        return None  # 或 raise 自定义异常，视你需求而定
+
 
 
 def make_url(temp_url: str, data: dict):
@@ -428,7 +431,7 @@ def get_accommodation_info(accommodation: webelement.WebElement):
 def test():
     # $x('//*[@data-testid="modal-container"]//button')[0] 关闭注册窗口
     # 示例模板 URL
-    temp_url = "https://www.trivago.hk/en-HK/srl/hotels-tokyo-japan?search=200-71462;dr-20240617-20240618;rc-1-2-4-6"
+    temp_url = "https://www.trivago.hk/en-HK/srl/hotels-tokyo-japan?search=105-1318;200-71462;dr-20240525-20240527;rc-1-2;pa-24"
 
     driver = TaLogin().driver
 
@@ -436,15 +439,5 @@ def test():
 
     actions = ActionChains(driver)
 
-    # click filters
-    selector = '//button[@name="more_filters"]'
-    filters_btn = wait_find_element_xpath(selector)
-
-    close_calendar()
-
-    selector = '//*[@data-testid="pagination"]'
-    pagination_ol = driver.find_element(By.XPATH, selector)
-    pages = pagination_ol.text.strip().split("\n")
-    print(pages)
 
     driver.quit()
