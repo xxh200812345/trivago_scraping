@@ -30,3 +30,9 @@
 ## 生成trivago_main.exe
 > python setup.py build
 
+
+## QA
+1. lowest booking → other booking？输出文件要不要改
+2. 城市不存在的情况，要不要对应
+3. 语言-货币符号 是不是EN·$
+4. 确认输出内容是否理想

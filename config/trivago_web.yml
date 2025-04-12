@@ -3,7 +3,7 @@ home_page:
   # https://www.trivago.hk/en-HK/srl/hotels-tokyo-japan?search=105-1320;200-71462;dr-20240519-20240522;rc-1-2-4-6
   template: 
     url: "https://www.trivago.hk/en-HK/srl/hotels-{city_country}?search="
-    param: "{star};{code};dr-{checkin}-{checkout};rc-{rooms}-{adults}{child_ages}"
+    param: "{star};{code};dr-{checkin}-{checkout}-s;rc-{rooms}-{adults}{child_ages}"
     default:
       city_country: tokyo-japan
       code: 200-71462
@@ -49,12 +49,19 @@ selectors:
   Hotelname: './/*[@data-testid="details-section"]//*[@data-testid="item-name"]//span'
   Star: './/*[@data-testid="star-rating"]//meta'
   Type: './/*[@data-testid="accommodation-type"]'
-  Recommend booking: './/*[@data-testid="recommended-price-partner"]'
-  Price: './/*[@data-testid="clickout-area"]//*[@data-testid="recommended-price"]'
-  Other1 booking: './/*[contains(@data-testid,"alternative-deal")]//*[@itemprop="name"]'
-  Other1 price: './/*[contains(@data-testid,"alternative-deal")]//*[@itemprop="price"]'
-  Lowest booking: './/*[@data-testid="cheapest-price-label"]/span/span[3]'
-  Lowest price: './/*[@data-testid="cheapest-price-label"]//*[@itemprop="price"]'
+  Recommend booking: './/*[@data-testid="clickout-area"]//*[@data-testid="advertiser-name"]'
+  Price: './/*[@data-testid="clickout-area"]//*[@itemprop="price"]'
+  Other1 booking: './/*[@data-testid="anchor-deals-item"][1]//*[@data-testid="advertiser-name"]'
+  Other1 price: './/*[@data-testid="anchor-deals-item"][1]//*[@itemprop="price"]'
+  Lowest booking: './/*[@data-testid="anchor-deals-item"][2]//*[@data-testid="advertiser-name"]'
+  Lowest price: './/*[@data-testid="anchor-deals-item"][2]//*[@itemprop="price"]'
+
+# Here is another one price scenario
+selectors2:
+  Other1 booking: './/*[@data-testid="price-with-advertiser"][1]//*[@data-testid="advertiser-name"]'
+  Other1 price: './/*[@data-testid="price-with-advertiser"][1]//*[@itemprop="price"]'
+  Lowest booking: './/*[@data-testid="price-with-advertiser"][2]//*[@data-testid="advertiser-name"]'
+  Lowest price: './/*[@data-testid="price-with-advertiser"][2]//*[@itemprop="price"]'
 
 edge_options:
   arguments:

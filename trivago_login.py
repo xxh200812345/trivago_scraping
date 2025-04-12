@@ -70,24 +70,19 @@ class TaLogin:
         selector = '//header//*[@data-testid="header-localization-menu"]/span[2]/span'
         localization_menu_element = wait_find_element_xpath(selector)
         localization_menu = localization_menu_element.text
-        TaLog().info(f"{self.current_task.log_key}localization-menu: {localization_menu}")
-
+        TaLog().info(
+            f"{self.current_task.log_key}localization-menu: {localization_menu}"
+        )
 
         # 用货币符号找到对应的货币缩写
         currency_dict = config["currency_dict"]
         current_sign = currency_dict[self.current_task.currency]
 
-        try:        
-            selector = '(//*[@data-testid="expected-price"])[1]/span/b'
-            page_sign_element = wait_find_element_xpath(selector)
-            page_sign = page_sign_element.text
-        except Exception as e:
-            TaLog().info(f"{self.current_task.log_key}Failed to find span/b inside expected-price: {e}")
-            return
+
 
         # 如果货币和搜索数据不一致，则改成一致
         actions = ActionChains(driver)
-        if current_sign not in page_sign[:len(current_sign)]:
+        if current_sign not in localization_menu[-1]:
             TaLog().info(
                 f"{self.current_task.log_key}currency:  -> {self.current_task.currency}"
             )
@@ -120,6 +115,10 @@ class TaLogin:
 
         if self.current_task.state is TaTask.STATE_NORMAL:
             self.goto_url()
+
+            if self.current_task.state == TaTask.STATE_ERROR:
+                return
+
             self.current_page = 1
             self.get_accommodation_list()
 
@@ -141,6 +140,9 @@ class TaLogin:
         # 如果db中存在code
         if len(ret) == 0:
             self.get_code()
+
+            if self.current_task.state == TaTask.STATE_ERROR:
+                return
             ret = _db.to_do(TaDB.SQL_TYPE_SEARCH, sql, (search_key,))
 
         row = ret[0]
@@ -257,6 +259,9 @@ class TaLogin:
         TaLog().info(f"{self.current_task.log_key}output: {len(outputs)} lines")
 
     def get_code(self):
+        """
+        获取城市的code
+        """
         temp_url = self.default_url()
         driver = self.driver
         # 调用函数生成完整的 URL
@@ -324,7 +329,7 @@ class TaLogin:
             TaLog().error(
                 f"{self.current_task.log_key}没有找到URL的code匹配项: {current_url}"
             )
-            raise ValueError("没有找到URL的code匹配项")
+            self.current_task.state = TaTask.STATE_ERROR
 
     def default_url(self):
         config = TaConfig().config
@@ -390,9 +395,10 @@ def wait_find_element_xpath(selector, waittime=10):
         element = wait.until(EC.visibility_of_element_located((By.XPATH, selector)))
         return element
     except TimeoutException:
-        TaLog().error(f"[ERROR] Timeout after {waittime}s waiting for XPath: {selector}")
+        TaLog().error(
+            f"[ERROR] Timeout after {waittime}s waiting for XPath: {selector}"
+        )
         return None  # 或 raise 自定义异常，视你需求而定
-
 
 
 def make_url(temp_url: str, data: dict):
@@ -419,6 +425,15 @@ def get_accommodation_info(accommodation: webelement.WebElement):
         except:
             output[output_name] = ""
 
+    selectors: dict = config["selectors2"]
+    for output_name, selector in selectors.items():
+        try:
+            element = accommodation.find_element(By.XPATH, selector)
+            if output[output_name] == "":
+                output[output_name] = element.text
+        except:
+            pass
+
     if not output["Lowest booking"]:
         output["Lowest booking"] = output["Recommend booking"]
     if not output["Lowest price"]:
@@ -438,6 +453,5 @@ def test():
     driver.get(temp_url)
 
     actions = ActionChains(driver)
-
 
     driver.quit()
