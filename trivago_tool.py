@@ -21,7 +21,7 @@ class TaConfig:
         Get configuration from a YAML file.
         '''
         # Open the YAML file and load its contents
-        with open(path, 'r') as stream:
+        with open(path, 'r', encoding="utf-8") as stream:
             return yaml.safe_load(stream)
 
     @staticmethod

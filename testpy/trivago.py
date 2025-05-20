@@ -198,9 +198,9 @@ def inittilt(nowsheet):
     nowsheet["H1"] = "Other1"
     nowsheet.column_dimensions["H"].width = 10
 
-    nowsheet["I1"] = "lowest booking"
+    nowsheet["I1"] = "other2 booking"
     nowsheet.column_dimensions["I"].width = 15
-    nowsheet["J1"] = "lowest price"
+    nowsheet["J1"] = "other2 price"
     nowsheet.column_dimensions["J"].width = 10
 
     nowsheet["K1"] = "Other3"

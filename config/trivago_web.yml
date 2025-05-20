@@ -34,8 +34,8 @@ output:
     - Type
     - Other1 booking
     - Other1 price
-    - Lowest booking
-    - Lowest price
+    - other2 booking
+    - other2 price
     - Checkin
     - Checkout
     - Currency
@@ -53,15 +53,20 @@ selectors:
   Price: './/*[@data-testid="clickout-area"]//*[@itemprop="price"]'
   Other1 booking: './/*[@data-testid="anchor-deals-item"][1]//*[@data-testid="advertiser-name"]'
   Other1 price: './/*[@data-testid="anchor-deals-item"][1]//*[@itemprop="price"]'
-  Lowest booking: './/*[@data-testid="anchor-deals-item"][2]//*[@data-testid="advertiser-name"]'
-  Lowest price: './/*[@data-testid="anchor-deals-item"][2]//*[@itemprop="price"]'
+  other2 booking: './/*[@data-testid="anchor-deals-item"][2]//*[@data-testid="advertiser-name"]'
+  other2 price: './/*[@data-testid="anchor-deals-item"][2]//*[@itemprop="price"]'
 
 # Here is another one price scenario
 selectors2:
   Other1 booking: './/*[@data-testid="price-with-advertiser"][1]//*[@data-testid="advertiser-name"]'
   Other1 price: './/*[@data-testid="price-with-advertiser"][1]//*[@itemprop="price"]'
-  Lowest booking: './/*[@data-testid="price-with-advertiser"][2]//*[@data-testid="advertiser-name"]'
-  Lowest price: './/*[@data-testid="price-with-advertiser"][2]//*[@itemprop="price"]'
+  other2 booking: './/*[@data-testid="price-with-advertiser"][2]//*[@data-testid="advertiser-name"]'
+  other2 price: './/*[@data-testid="price-with-advertiser"][2]//*[@itemprop="price"]'
+
+search_area:
+  cityname: '//*[@role="combobox"]//*[@id="input-auto-complete"]'
+
+
 
 edge_options:
   arguments:
@@ -72,7 +77,7 @@ edge_options:
     - --disable-popup-blocking
     - --incognito
     - --start-maximized
-    - --lang=en-HK
+    - --lang=en-US
     - --user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36
   prefs:
     first_run_customized: False
@@ -89,7 +94,7 @@ chrome_options:
     - --disable-popup-blocking
     - --incognito
     - --start-maximized
-    - --lang=en-HK
+    - --lang=en-US
     - --user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36
   prefs:
     profile.default_content_setting_values.notifications: 2
@@ -134,10 +139,4 @@ db:
         WHERE search_key = ?;
 
 currency_dict:
-  USD: $
-  HKD: HK$
-        
-
-
-
-
+  USD: 'EN · $'

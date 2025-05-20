@@ -82,7 +82,7 @@ class TaLogin:
 
         # 如果货币和搜索数据不一致，则改成一致
         actions = ActionChains(driver)
-        if current_sign not in localization_menu[-1]:
+        if current_sign != localization_menu:
             TaLog().info(
                 f"{self.current_task.log_key}currency:  -> {self.current_task.currency}"
             )
@@ -92,6 +92,7 @@ class TaLogin:
 
             selector = f'//*[@id="currency-select"]'
             currency_select = wait_find_element_xpath(selector)
+            time.sleep(1)
             actions.move_to_element(currency_select).click().perform()
 
             # 设置成task中的货币
@@ -121,6 +122,9 @@ class TaLogin:
 
             self.current_page = 1
             self.get_accommodation_list()
+            
+            if self.current_task.state == TaTask.STATE_ERROR:
+                return
 
         self.current_task.state = TaTask.STATE_OVER
         TaLog().info(f"{self.current_task.log_key}end query")
@@ -161,6 +165,9 @@ class TaLogin:
         self.current_task.url = url
 
     def open_url(self, url):
+        """
+        打开指定的URL
+        """
         driver = TaLogin().driver
         driver.get(url)
 
@@ -183,12 +190,31 @@ class TaLogin:
 
         TaLog().info(f"{self.current_task.log_key}初始化下载环境")
         TaLog().info(f"{self.current_task.log_key}{self.current_task.url}")
+        TaLog().info(
+            f"{self.current_task.log_key}search city_name: {self.current_task.cityname}"
+        )
 
         self.open_url(self.current_task.url)
 
         # 广告商列表
         selector = '//*[@data-testid="accommodation-list"]'
         wait_find_element_xpath(selector)
+
+        # 获取城市名称
+        selector = TaConfig().config["search_area"]["cityname"]
+        # 获取城市输入框
+        destination_input = wait_find_element_xpath(selector)
+        city_name = destination_input.get_attribute("value")
+        TaLog().info(f"{self.current_task.log_key}page city_name: {city_name}")
+
+        # 如果城市名称不一致，则报错
+        if city_name.lower() != self.current_task.cityname.lower():
+            TaLog().error(
+                f"{self.current_task.log_key}城市名称不一致: {city_name} != {self.current_task.cityname}"
+            )
+            self.current_task.state = TaTask.STATE_ERROR
+            self.output_error2excel("City name is not match")
+            return
 
         # 最大页数
         try:
@@ -252,16 +278,35 @@ class TaLogin:
             output["Checkin"] = self.current_task.checkin
             output["Checkout"] = self.current_task.checkout
             output["Currency"] = self.current_task.currency
-
             TaLog().info(f"{self.current_task.log_key}{index}: {output}")
             outputs.append(output)
+
+        # 写入excel数据
         self.current_task.output(self.output_path, outputs)
-        TaLog().info(f"{self.current_task.log_key}output: {len(outputs)} lines")
+
+        if(len(outputs) == 0):
+            TaLog().error(f"{self.current_task.log_key}没有获取到数据")
+            self.current_task.state = TaTask.STATE_ERROR
+            self.output_error2excel("No result(list is empty)")
+        else:
+            TaLog().info(f"{self.current_task.log_key}output: {len(outputs)} lines")
+
+    def output_error2excel(self, msg: str):
+        """
+        输出ERROR INFO到excel
+        """
+        output = {}
+        output["Page_No"] = f"{self.current_page}-1"
+        output["City"] = self.current_task.cityname
+        output["Hotelname"] = msg
+        self.current_task.output(self.output_path, [output])
 
     def get_code(self):
         """
         获取城市的code
         """
+        config = TaConfig().config
+
         temp_url = self.default_url()
         driver = self.driver
         # 调用函数生成完整的 URL
@@ -272,7 +317,7 @@ class TaLogin:
         default_url = driver.current_url
 
         # 找到指定的div元素
-        selector = '//*[@role="combobox"]//*[@id="input-auto-complete"]'
+        selector = config["search_area"]["cityname"]
         # 获取城市输入框
         destination_input = wait_find_element_xpath(selector)
 
@@ -433,12 +478,6 @@ def get_accommodation_info(accommodation: webelement.WebElement):
                 output[output_name] = element.text
         except:
             pass
-
-    if not output["Lowest booking"]:
-        output["Lowest booking"] = output["Recommend booking"]
-    if not output["Lowest price"]:
-        output["Lowest price"] = output["Price"]
-    output["Lowest booking"] = output["Lowest booking"].replace("per night on ", "")
 
     return output
 
