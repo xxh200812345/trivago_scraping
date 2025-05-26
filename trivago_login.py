@@ -78,8 +78,6 @@ class TaLogin:
         currency_dict = config["currency_dict"]
         current_sign = currency_dict[self.current_task.currency]
 
-
-
         # 如果货币和搜索数据不一致，则改成一致
         actions = ActionChains(driver)
         if current_sign != localization_menu:
@@ -132,27 +130,39 @@ class TaLogin:
     def goto_url(self):
         config = TaConfig().config
         _db = TaDB()
+        city_country = None
+        code = None
 
-        search_key = self.current_task.cityname
-        sql = _db.tables["city"][_db.SQL_TYPE_SEARCH]
-        ret = _db.to_do(TaDB.SQL_TYPE_SEARCH, sql, (search_key,))
+        # 如果excel里已经有了城市code，则直接使用
+        if self.current_task.location_slug is not None:
+            TaLog().info(f"{self.current_task.log_key}excel里已经有了城市code，直接使用")
+            city_country  = self.current_task.location_slug
+            code = self.current_task.city_code
+        else:
+            search_key = self.current_task.cityname
+            sql = _db.tables["city"][_db.SQL_TYPE_SEARCH]
+            ret = _db.to_do(TaDB.SQL_TYPE_SEARCH, sql, (search_key,))
+
+            # 如果db中不存在code
+            if len(ret) == 0:
+                TaLog().info(f"{self.current_task.log_key}需要去获取城市code")
+                self.get_code()
+
+                if self.current_task.state == TaTask.STATE_ERROR:
+                    return
+                ret = _db.to_do(TaDB.SQL_TYPE_SEARCH, sql, (search_key,))
+
+            city_country = ret[0][0]
+            code = ret[0][1]
+
 
         template_obj = config["home_page"]["template"]
         temp_url = template_obj["url"]
         temp_url += template_obj["param"]
 
-        # 如果db中存在code
-        if len(ret) == 0:
-            self.get_code()
-
-            if self.current_task.state == TaTask.STATE_ERROR:
-                return
-            ret = _db.to_do(TaDB.SQL_TYPE_SEARCH, sql, (search_key,))
-
-        row = ret[0]
         replace_values = {
-            "city_country": row[0],
-            "code": row[1],
+            "city_country": city_country,
+            "code": code,
             "star": self.current_task.star_for_url(),
             "checkin": self.current_task.checkin_for_url(),
             "checkout": self.current_task.checkout_for_url(),
@@ -207,8 +217,8 @@ class TaLogin:
         city_name = destination_input.get_attribute("value")
         TaLog().info(f"{self.current_task.log_key}page city_name: {city_name}")
 
-        # 如果城市名称不一致，则报错
-        if city_name.lower() != self.current_task.cityname.lower():
+        # 如果城市名称不一致，则报错, 如果excel已经有了城市code，则不需要检查
+        if self.current_task.location_slug == "" and city_name.lower() != self.current_task.cityname.lower():
             TaLog().error(
                 f"{self.current_task.log_key}城市名称不一致: {city_name} != {self.current_task.cityname}"
             )
@@ -234,6 +244,30 @@ class TaLogin:
             self.current_page = i
             self.accommodation_list_loop()
 
+    def build_output_dict(self, index=None, hotel_data=None, error_msg=None):
+        """
+        构造统一的输出字典
+        :param index: 页面中的序号（用于 Page_No）
+        :param hotel_data: 单个酒店字典
+        :param error_msg: 若是错误信息，传入该内容
+        :return: dict
+        """
+        output = hotel_data.copy() if hotel_data else {}
+        output["Task_No"] = f"{self.current_task.log_key}"
+        output["Page_No"] = f"{self.current_page}-{index if index else 1}"
+        output["City"] = self.current_task.cityname
+        output["Checkin"] = self.current_task.checkin
+        output["Checkout"] = self.current_task.checkout
+        output["Currency"] = self.current_task.currency
+        output["location_slug"] = self.current_task.location_slug
+        output["city_code"] = self.current_task.city_code
+
+        if error_msg:
+            output["Hotelname"] = error_msg
+
+        return output
+
+
     def accommodation_list_loop(self):
         """
         获取指定页面的全部广告商数据
@@ -242,63 +276,47 @@ class TaLogin:
 
         url = self.current_task.url
         if self.current_max_page != 1 and self.current_page <= self.current_max_page:
-            url += f";pa-{str(self.current_page)}"
-        page_info = f"page({str(self.current_page)}/{str(self.current_max_page)})"
+            url += f";pa-{self.current_page}"
+        page_info = f"page({self.current_page}/{self.current_max_page})"
         TaLog().info(f"{self.current_task.log_key}开始下载数据,{page_info}")
         TaLog().info(f"{self.current_task.log_key}{url}")
 
         self.open_url(url)
-
         time.sleep(self.loading_wait_time)
 
-        waittime = 10
-        waittiem_count = 0
-        while waittiem_count < waittime:
+        for _ in range(10):
             if self.loading_accommodation_list():
                 break
             time.sleep(1)
-            waittiem_count += 1
-
-        if waittime <= waittiem_count:
-            TaLog().error(
-                f"{self.current_task.log_key}check_accommodation_list is False"
-            )
+        else:
+            TaLog().error(f"{self.current_task.log_key}check_accommodation_list is False")
             return
 
         selector = '//*[@data-testid="accommodation-list"]//*[@data-testid="accommodation-list-element"]'
         accommodation_list = driver.find_elements(By.XPATH, selector)
 
-        index = 0
         outputs = []
-        for accommodation in accommodation_list:
-            index += 1
-            output = get_accommodation_info(accommodation)
-            output["Page_No"] = f"{self.current_page}-{index}"
-            output["City"] = self.current_task.cityname
-            output["Checkin"] = self.current_task.checkin
-            output["Checkout"] = self.current_task.checkout
-            output["Currency"] = self.current_task.currency
+        for index, accommodation in enumerate(accommodation_list, start=1):
+            hotel_data = get_accommodation_info(accommodation)
+            output = self.build_output_dict(index=index, hotel_data=hotel_data)
             TaLog().info(f"{self.current_task.log_key}{index}: {output}")
             outputs.append(output)
 
-        # 写入excel数据
         self.current_task.output(self.output_path, outputs)
 
-        if(len(outputs) == 0):
+        if not outputs:
             TaLog().error(f"{self.current_task.log_key}没有获取到数据")
             self.current_task.state = TaTask.STATE_ERROR
             self.output_error2excel("No result(list is empty)")
         else:
             TaLog().info(f"{self.current_task.log_key}output: {len(outputs)} lines")
 
+
     def output_error2excel(self, msg: str):
         """
-        输出ERROR INFO到excel
+        输出 ERROR 信息到 Excel
         """
-        output = {}
-        output["Page_No"] = f"{self.current_page}-1"
-        output["City"] = self.current_task.cityname
-        output["Hotelname"] = msg
+        output = self.build_output_dict(error_msg=msg)
         self.current_task.output(self.output_path, [output])
 
     def get_code(self):

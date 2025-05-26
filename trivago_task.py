@@ -16,6 +16,8 @@ class TaTask:
     roomtype: str = None
     currency: str = None
     star: int = None
+    location_slug: str = None
+    city_code: str = None
     log_key = None
     url = None
     ROOM_TYPE_SINGLE = "Single room"
@@ -29,14 +31,9 @@ class TaTask:
     def __init__(self, cell: list, index: int):
         try:
             self.log_key = f"line[{index:06}] "
-            (
-                self.cityname,
-                self.checkin,
-                self.checkout,
-                self.roomtype,
-                self.currency,
-                self.star,
-            ) = cell
+            fields = ["cityname", "checkin", "checkout", "roomtype", "currency", "star", "location_slug", "city_code"]
+            for i, field in enumerate(fields):
+                setattr(self, field, cell[i] if i < len(cell) else "")
             self.roomtype = TaTask.ROOM_TYPE_SINGLE
             self.state = TaTask.STATE_NORMAL
 
@@ -60,6 +57,8 @@ class TaTask:
         # Print the row data
         for index, row in enumerate(ws.iter_rows(min_row=2)):
             row_data = []
+            if all(cell.value is None for cell in row):
+                continue
             for cell in row:
                 row_data.append(cell.value)
             _task = TaTask(row_data, (index + 2))
@@ -70,8 +69,8 @@ class TaTask:
     def check_roomtype(self, roomtype: str):
         if roomtype != self.ROOM_TYPE_SINGLE:
             raise ValueError("房间类型错误")
-
         return roomtype
+    
 
     @staticmethod
     def output_create():

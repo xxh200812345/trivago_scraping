@@ -25,6 +25,7 @@ logging_path: config\logging.yml
 output:
   path: output\
   titles:
+    - Task_No
     - Page_No
     - City
     - Hotelname
@@ -39,6 +40,9 @@ output:
     - Checkin
     - Checkout
     - Currency
+    - location_slug
+    - city_code
+  
 
 stars:
   3: 105-1318
