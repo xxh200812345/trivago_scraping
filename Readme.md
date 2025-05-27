@@ -1,6 +1,6 @@
 # 使用方法
 1. 需要chrome浏览器
-2. 下载解压 `res\exe.win-amd64-3.12.rar` 压缩包，双击执行`trivago.exe`
+2. 下载解压 `exe.win-amd64-3.12.zip` 压缩包，双击执行`trivago.exe`
 3. chrome浏览器会自动打开，并自动打开trivago网页，进行搜索
    （爬虫工具，会根据`res/searchlist.xlsx`的条件，逐条搜索。
 4. `log/info.log` 里可以查看搜索过程。

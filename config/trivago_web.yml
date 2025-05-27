@@ -143,4 +143,5 @@ db:
         WHERE search_key = ?;
 
 currency_dict:
+  HKD: 'EN · $'
   USD: 'EN · $'

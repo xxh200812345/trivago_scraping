@@ -28,6 +28,7 @@ class TaLogin:
     current_page = 1
     loading_wait_time = 1
     output_path = ""
+    before_currency = ""
 
     def __new__(cls, *args, **kwargs):
         if not cls._instance:
@@ -80,7 +81,7 @@ class TaLogin:
 
         # 如果货币和搜索数据不一致，则改成一致
         actions = ActionChains(driver)
-        if current_sign != localization_menu:
+        if current_sign != self.before_currency:
             TaLog().info(
                 f"{self.current_task.log_key}currency:  -> {self.current_task.currency}"
             )
@@ -100,6 +101,8 @@ class TaLogin:
             selector = '//dialog//button[@type="submit"]'
             dialog_apply_btn = wait_find_element_xpath(selector)
             actions.move_to_element(dialog_apply_btn).click().perform()
+
+            self.before_currency = current_sign
 
     def do_task(self, task: TaTask):
         """
