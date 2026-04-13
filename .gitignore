@@ -1,6 +1,22 @@
-ts-env/
+# 虚拟环境
+.venv/
+venv/
+env/
+
+# 打包和输出目录
 build/
+dist/
 output/
+testpy/
+
+# 日志与缓存
 *.log
 __pycache__/
-*.pyc
+*.py[cod]
+
+# 环境变量与密钥
+.env
+
+# IDE 配置文件
+.vscode/
+.idea/

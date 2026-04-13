@@ -3,7 +3,7 @@ home_page:
   # https://www.trivago.hk/en-HK/srl/hotels-tokyo-japan?search=105-1320;200-71462;dr-20240519-20240522;rc-1-2-4-6
   template: 
     url: "https://www.trivago.hk/en-HK/srl/hotels-{city_country}?search="
-    param: "{star};{code};dr-{checkin}-{checkout}-s;rc-{rooms}-{adults}{child_ages}"
+    param: "{star};{code};dr-{checkin}-{checkout};drs-40;rc-{rooms}-{adults}{child_ages}"
     default:
       city_country: tokyo-japan
       code: 200-71462
@@ -50,7 +50,7 @@ stars:
   5: 105-1322
 
 selectors:
-  Hotelname: './/*[@data-testid="details-section"]//*[@data-testid="item-name"]//span'
+  Hotelname: './/*[@data-testid="details-section"]//*[@data-testid="item-name-link"]//span'
   Star: './/*[@data-testid="star-rating"]//meta'
   Type: './/*[@data-testid="accommodation-type"]'
   Recommend booking: './/*[@data-testid="clickout-area"]//*[@data-testid="advertiser-name"]'

@@ -68,7 +68,7 @@ class TaLogin:
         config = TaConfig().config
 
         # 获取当前货币符号
-        selector = '//header//*[@data-testid="header-localization-menu"]/span[2]/span'
+        selector = '//header//*[@data-testid="header-localization-menu"]/span[1]'
         localization_menu_element = wait_find_element_xpath(selector)
         localization_menu = localization_menu_element.text
         TaLog().info(
@@ -184,16 +184,30 @@ class TaLogin:
         driver = TaLogin().driver
         driver.get(url)
 
+        # 如果没有数据，输出No results
+        selector = '//*[@data-testid="partial-results-notification"]'
+        nothing = wait_find_element_xpath(selector)
+        if (nothing is not None and 'No results' in nothing.text):
+            TaLog().info(f"{self.current_task.log_key} No results")
+            return False
+        # 如果有数据
         # accommodations-counter
         selector = '//*[@data-testid="loading-animation-accommodations-counter"]'
         hotels_count = wait_find_element_xpath(selector)
-        TaLog().info(f"{self.current_task.log_key}{hotels_count.text}")
+        if (hotels_count is not None):
+            TaLog().info(f"{self.current_task.log_key}{hotels_count.text}")
+        else:
+            TaLog().error(f"{self.current_task.log_key} 没有提示No results，但是找不到酒店数据。")
+            self.current_task.state = TaTask.STATE_ERROR
+            return False
 
         # 关闭日期选择
         close_calendar()
 
         # 设置货币
         self.set_currency()
+
+        return True
 
     def get_accommodation_list(self):
         """
@@ -207,7 +221,9 @@ class TaLogin:
             f"{self.current_task.log_key}search city_name: {self.current_task.cityname}"
         )
 
-        self.open_url(self.current_task.url)
+        if(self.open_url(self.current_task.url) is False):
+            return
+        
 
         # 广告商列表
         selector = '//*[@data-testid="accommodation-list"]'
