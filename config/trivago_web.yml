@@ -90,16 +90,31 @@ edge_options:
     welcome_page_enabled: False
 
 chrome_options:
+  # --- 新增：模式切换开关 ---
+  use_actual_browser: true  # true: 接管模式 (更像真人) | false: 原生模拟模式 (纯净沙盒)
+
+  # --- 新增：真实浏览器路径 ---
+  # 确保路径指向你电脑上 chrome.exe 的实际位置
+  chrome_path: "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"
+  
+  # --- 新增：远程调试端口 ---
+  # 只要不被其他程序占用，通常使用 9222
+  debug_port: 9222
+  # --- 原有：浏览器启动参数 ---
   arguments:
     - --ignore-certificate-errors
     - --ignore-ssl-errors
     - --accept-language=en
     - --disable-extensions
     - --disable-popup-blocking
-    - --incognito
+    # 注意：在接管模式下，--incognito (无痕) 可能会导致无法保存登录状态
+    # 如果你想保持登录，建议在接管模式时临时注释掉 --incognito
+    # - --incognito 
     - --start-maximized
     - --lang=en-US
     - --user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36
+
+  # --- 原有：首选项配置 ---
   prefs:
     profile.default_content_setting_values.notifications: 2
     credentials_enable_service: False

@@ -1,5 +1,7 @@
 import time
 import re
+import subprocess
+import os
 
 from trivago_log import TaLog
 from trivago_task import TaTask
@@ -37,27 +39,72 @@ class TaLogin:
         return cls._instance
 
     def driver_init_chrome(self):
-        TaLog().info("启动chrome浏览控制器")
-
+        TaLog().info("正在初始化 Chrome 控制器...")
         config = TaConfig().config
-
-        # 创建Chrome浏览器选项
+        chrome_cfg = config.get("chrome_options", {})
+        
+        use_actual_browser = chrome_cfg.get("use_actual_browser", False)
         options = webdriver.ChromeOptions()
 
-        # 添加浏览器参数
-        for argument in config["chrome_options"]["arguments"]:
-            options.add_argument(argument)
+        if use_actual_browser:
+            # --- 模式 A: 启动并接管真实浏览器 ---
+            current_dir = os.getcwd()
+            # 建议将 profile 放在工程目录下，避免污染根目录
+            user_data_path = os.path.join(current_dir, "chrome_profile")
 
-        # 设置首选项
-        if "prefs" in config["chrome_options"]:
-            options.add_experimental_option("prefs", config["chrome_options"]["prefs"])
+            if not os.path.exists(user_data_path):
+                os.makedirs(user_data_path)
+                TaLog().info(f"创建浏览器配置文件夹: {user_data_path}")
 
-        # 启动Chrome浏览器
+            chrome_path = chrome_cfg.get("chrome_path")
+            debug_port = chrome_cfg.get("debug_port", 9222)
+            
+            TaLog().info(f"【接管模式】尝试启动真实浏览器端口: {debug_port}")
+
+            # 修正变量名：user_data -> user_data_path
+            start_cmd = [
+                chrome_path,
+                f"--remote-debugging-port={debug_port}",
+                f"--user-data-dir={user_data_path}",
+                "--no-first-run",           # 跳过首次运行向导
+                "--no-default-browser-check" # 跳过默认浏览器检查
+            ]
+            
+            for arg in chrome_cfg.get("arguments", []):
+                # 过滤掉可能引起冲突的参数
+                if "--user-data-dir" not in arg and "--remote-debugging-port" not in arg:
+                    start_cmd.append(arg)
+
+            # 启动物理进程
+            subprocess.Popen(start_cmd)
+            time.sleep(2) 
+
+            # 告诉 Selenium 去连这个端口
+            options.add_experimental_option("debuggerAddress", f"127.0.0.1:{debug_port}")
+            
+        else:
+            # --- 模式 B: 原生 Selenium 模拟模式 ---
+            TaLog().info("【标准模式】使用 Selenium 默认配置启动")
+            for argument in chrome_cfg.get("arguments", []):
+                options.add_argument(argument)
+            
+            if "prefs" in chrome_cfg:
+                options.add_experimental_option("prefs", chrome_cfg["prefs"])
+
+        # 统一启动 Driver
+        # 注意：接管模式下，webdriver 会直接连接到 9222 端口，而不再额外启动一个新的浏览器
         driver = webdriver.Chrome(
-            service=ChromeService(ChromeDriverManager().install()), options=options
+            service=ChromeService(ChromeDriverManager().install()), 
+            options=options
         )
 
-        # 打开一个新的空白标签页
+        if not use_actual_browser:
+            driver.execute_cdp_cmd("Page.addScriptToEvaluateOnNewDocument", {
+                "source": "Object.defineProperty(navigator, 'webdriver', {get: () => undefined})"
+            })
+
+        # 这里的逻辑建议：接管模式下如果已经开着页面，可能不需要再开空白页
+        # 但如果你习惯这种方式，保持原样即可
         driver.execute_script("window.open('','_blank');")
         driver.switch_to.window(driver.window_handles[0])
 
@@ -184,12 +231,6 @@ class TaLogin:
         driver = TaLogin().driver
         driver.get(url)
 
-        # 如果没有数据，输出No results
-        selector = '//*[@data-testid="partial-results-notification"]'
-        nothing = wait_find_element_xpath(selector)
-        if (nothing is not None and 'No results' in nothing.text):
-            TaLog().info(f"{self.current_task.log_key} No results")
-            return False
         # 如果有数据
         # accommodations-counter
         selector = '//*[@data-testid="loading-animation-accommodations-counter"]'
@@ -197,8 +238,19 @@ class TaLogin:
         if (hotels_count is not None):
             TaLog().info(f"{self.current_task.log_key}{hotels_count.text}")
         else:
-            TaLog().error(f"{self.current_task.log_key} 没有提示No results，但是找不到酒店数据。")
+
+            # 如果没有数据，输出No results
+            selector = '//*[@data-testid="partial-results-notification"]'
+            nothing = wait_find_element_xpath(selector, waittime=5, required=False) 
+            if (nothing is not None and 'No results' in nothing.text):
+                TaLog().info(f"{self.current_task.log_key} No results")
+                self.output_error2excel("No result(list is empty)")
+                return False
+
+            error_msg = f"{self.current_task.log_key} 没有提示No results，但是找不到酒店数据。"
+            TaLog().error(error_msg)
             self.current_task.state = TaTask.STATE_ERROR
+            self.output_error2excel(error_msg)
             return False
 
         # 关闭日期选择
@@ -469,18 +521,28 @@ def close_calendar():
         pass
 
 
-def wait_find_element_xpath(selector, waittime=10):
+def wait_find_element_xpath(selector, waittime=10, required=True):
+    """
+    通过 XPath 查找元素并带等待机制
+    :param selector: XPath 路径
+    :param waittime: 等待秒数
+    :param required: 是否为必选元素。如果是 False，超时将不记录错误日志
+    """
     driver = TaLogin().driver
     wait = WebDriverWait(driver, waittime)
+    
     try:
         # 等待元素可见
         element = wait.until(EC.visibility_of_element_located((By.XPATH, selector)))
         return element
     except TimeoutException:
-        TaLog().error(
-            f"[ERROR] Timeout after {waittime}s waiting for XPath: {selector}"
-        )
-        return None  # 或 raise 自定义异常，视你需求而定
+        # 根据 required 参数决定日志处理方式
+        if required:
+            # 必选元素丢失：记录 ERROR 级别日志
+            TaLog().error(
+                f"[CRITICAL] Element not found (Required): {selector} (waited {waittime}s)"
+            )
+        return None
 
 
 def make_url(temp_url: str, data: dict):
