@@ -289,13 +289,18 @@ class TaLogin:
         TaLog().info(f"{self.current_task.log_key}page city_name: {city_name}")
 
         # 如果城市名称不一致，则报错, 如果excel已经有了城市code，则不需要检查
-        if self.current_task.location_slug == "" and city_name.lower() != self.current_task.cityname.lower():
-            TaLog().error(
-                f"{self.current_task.log_key}城市名称不一致: {city_name} != {self.current_task.cityname}"
-            )
-            self.current_task.state = TaTask.STATE_ERROR
-            self.output_error2excel("City name is not match")
-            return
+        if not self.current_task.location_slug:
+            TaLog().info(f"{self.current_task.log_key}需要检查网页的城市和检索文件中的城市是否一致")
+
+            if city_name.lower() != self.current_task.cityname.lower():
+                TaLog().error(
+                    f"{self.current_task.log_key}城市名称不一致: {city_name} != {self.current_task.cityname}"
+                )
+                self.current_task.state = TaTask.STATE_ERROR
+                self.output_error2excel("City name is not match")
+                return
+            else:
+                TaLog().info(f"{self.current_task.log_key}城市名称一致√")
 
         # 最大页数
         try:
@@ -400,6 +405,8 @@ class TaLogin:
         driver = self.driver
         # 调用函数生成完整的 URL
         driver.get(temp_url)
+        time.sleep(5)
+        close_calendar()
 
         # 创建ActionChains对象
         actions = ActionChains(driver)
@@ -409,8 +416,6 @@ class TaLogin:
         selector = config["search_area"]["cityname"]
         # 获取城市输入框
         destination_input = wait_find_element_xpath(selector)
-
-        close_calendar()
 
         # 模拟鼠标移动到div元素并点击
         actions.move_to_element(destination_input).click().perform()

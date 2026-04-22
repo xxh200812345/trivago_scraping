@@ -19,6 +19,7 @@ class TaTask:
     location_slug: str = None
     city_code: str = None
     log_key = None
+    line_no = None
     url = None
     ROOM_TYPE_SINGLE = "Single room"
     state = None
@@ -30,7 +31,7 @@ class TaTask:
     # init
     def __init__(self, cell: list, index: int):
         try:
-            self.log_key = f"line[{index:06}] "
+            self.line_no = f"line[{(index + 2):06}]"
             fields = ["cityname", "checkin", "checkout", "roomtype", "currency", "star", "location_slug", "city_code"]
             for i, field in enumerate(fields):
                 setattr(self, field, cell[i] if i < len(cell) else "")
@@ -61,9 +62,19 @@ class TaTask:
                 continue
             for cell in row:
                 row_data.append(cell.value)
-            _task = TaTask(row_data, (index + 2))
+            _task = TaTask(row_data, index)
             if _task.cityname != None:
                 tasks.append(_task)
+
+        # 2. 动态计算补零宽度
+        total_count = len(tasks)
+        # 计算总数的位数，比如 500 是 3 位，1000 是 4 位
+        width = len(str(total_count)) 
+
+        # 3. 统一格式化 log_key
+        for i, task in enumerate(tasks):
+            current_num = i + 1
+            task.log_key = f"[{current_num:0{width}d}/{total_count}] "
         return tasks
 
     def check_roomtype(self, roomtype: str):
