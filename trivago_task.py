@@ -1,3 +1,5 @@
+import time
+import random
 from typing import List
 from datetime import datetime
 
@@ -23,6 +25,7 @@ class TaTask:
     url = None
     ROOM_TYPE_SINGLE = "Single room"
     state = None
+    search_start_time = None
 
     STATE_NORMAL = "等待处理"
     STATE_ERROR = "数据错误"
@@ -148,6 +151,36 @@ class TaTask:
         config = TaConfig().config
         stars = config["stars"]
         return stars[self.star]
+    
+    def record_start_time(self):
+        """
+        将当前系统时间记录到 search_start_time 属性中
+        """
+        self.search_start_time = datetime.now()
+        TaLog().info(f"{self.log_key}开始执行任务时间已记录: {self.search_start_time}")
+
+    def wait_until_interval(self, interval_seconds: int = 10):
+        """
+        判定当前时间与 search_start_time 的差值。
+        如果不足指定秒数（含上下10%浮动），则进行等待。
+        """
+        if self.search_start_time is None:
+            return
+
+        # 加入随机浮动：例如 10s 会变成 9s ~ 11s 之间的随机数
+        random_factor = random.uniform(0.9, 1.1)
+        actual_interval = interval_seconds * random_factor
+
+        # 计算自上次记录 search_start_time 以来已流逝的时间
+        elapsed_time = (datetime.now() - self.search_start_time).total_seconds()
+        
+        if elapsed_time < actual_interval:
+            wait_time = actual_interval - elapsed_time
+            # 这里的日志可以打印出目标随机间隔，方便调试
+            TaLog().info(f"{self.log_key} 随机目标间隔为 {actual_interval:.2f}s (已过去 {elapsed_time:.2f}s)，需补足等待: {wait_time:.2f}s")
+            time.sleep(wait_time)
+        else:
+            TaLog().info(f"{self.log_key} 间隔已达标 (目标 {actual_interval:.2f}s，已过去 {elapsed_time:.2f}s)，无需额外等待")
 
     @staticmethod
     def count_task_states(tasks: List["TaTask"]) -> dict:

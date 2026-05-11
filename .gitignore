@@ -11,6 +11,7 @@ testpy/
 chrome_profile/
 
 # 日志与缓存
+log/
 *.log
 __pycache__/
 *.py[cod]

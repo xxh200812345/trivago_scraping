@@ -49,37 +49,34 @@ class TaLogin:
         if use_actual_browser:
             # --- 模式 A: 启动并接管真实浏览器 ---
             current_dir = os.getcwd()
-            # 建议将 profile 放在工程目录下，避免污染根目录
             user_data_path = os.path.join(current_dir, "chrome_profile")
 
             if not os.path.exists(user_data_path):
                 os.makedirs(user_data_path)
-                TaLog().info(f"创建浏览器配置文件夹: {user_data_path}")
 
             chrome_path = chrome_cfg.get("chrome_path")
             debug_port = chrome_cfg.get("debug_port", 9222)
             
-            TaLog().info(f"【接管模式】尝试启动真实浏览器端口: {debug_port}")
-
-            # 修正变量名：user_data -> user_data_path
+            # 1. 构造干净的启动命令
             start_cmd = [
                 chrome_path,
                 f"--remote-debugging-port={debug_port}",
                 f"--user-data-dir={user_data_path}",
-                "--no-first-run",           # 跳过首次运行向导
-                "--no-default-browser-check" # 跳过默认浏览器检查
+                "--no-first-run",
+                "--no-default-browser-check"
             ]
             
+            # 2. 动态过滤 YAML 里的参数
             for arg in chrome_cfg.get("arguments", []):
-                # 过滤掉可能引起冲突的参数
-                if "--user-data-dir" not in arg and "--remote-debugging-port" not in arg:
+                # 排除会导致报错或冲突的参数
+                if not any(x in arg for x in ["--user-data-dir", "--remote-debugging-port", "--ignore-"]):
                     start_cmd.append(arg)
 
-            # 启动物理进程
+            # 3. 启动物理浏览器
             subprocess.Popen(start_cmd)
-            time.sleep(2) 
+            time.sleep(3) # 稍微多等一会，确保浏览器完全启动
 
-            # 告诉 Selenium 去连这个端口
+            # 4. 设置 Selenium 实验性选项（用于隐藏自动化指纹）
             options.add_experimental_option("debuggerAddress", f"127.0.0.1:{debug_port}")
             
         else:
@@ -136,7 +133,7 @@ class TaLogin:
             header_localization_menu_btn = wait_find_element_xpath(selector)
             actions.move_to_element(header_localization_menu_btn).click().perform()
 
-            selector = f'//*[@id="currency-select"]'
+            selector = f'//*[@data-testid="localization-currency-select"]'
             currency_select = wait_find_element_xpath(selector)
             time.sleep(1)
             actions.move_to_element(currency_select).click().perform()
@@ -273,6 +270,7 @@ class TaLogin:
             f"{self.current_task.log_key}search city_name: {self.current_task.cityname}"
         )
 
+        self.current_task.record_start_time() # 记录开始查询时间
         if(self.open_url(self.current_task.url) is False):
             return
         
@@ -316,6 +314,10 @@ class TaLogin:
         except:
             self.current_max_page = 1
 
+        # 保证等待足够时间，防止快速访问触发限制
+        config = TaConfig().config
+        self.current_task.wait_until_interval(config['interval_seconds'])
+
         for i in range(self.current_page, self.current_max_page + 1):
             self.current_page = i
             self.accommodation_list_loop()
@@ -357,6 +359,7 @@ class TaLogin:
         TaLog().info(f"{self.current_task.log_key}开始下载数据,{page_info}")
         TaLog().info(f"{self.current_task.log_key}{url}")
 
+        self.current_task.record_start_time() # 记录开始查询时间
         self.open_url(url)
         time.sleep(self.loading_wait_time)
 
@@ -386,6 +389,10 @@ class TaLogin:
             self.output_error2excel("No result(list is empty)")
         else:
             TaLog().info(f"{self.current_task.log_key}output: {len(outputs)} lines")
+            
+        # 保证等待足够时间，防止快速访问触发限制
+        config = TaConfig().config
+        self.current_task.wait_until_interval(config['interval_seconds'])
 
 
     def output_error2excel(self, msg: str):
