@@ -40,5 +40,6 @@ def logging_init():
         logging_yaml = yaml.load(stream=file, Loader=yaml.FullLoader)
         logging.config.dictConfig(config=logging_yaml)
 
-    logger = logging.getLogger()
+    wdm_logger = logging.getLogger("WDM")
+    logger = logging.getLogger("trivago_logic")
     return logger

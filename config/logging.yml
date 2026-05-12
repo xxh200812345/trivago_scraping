@@ -36,11 +36,17 @@ handlers:
     atTime: 00:00:00
 
 loggers:
-  my_module:
+  trivago_logic:
     level: ERROR
     handlers: [console]
     propagate: False
 
+  # 关键添加：显式配置 WDM logger
+  WDM:
+    level: DEBUG
+    handlers: [console, debug_file_handler] # 同时输出到控制台和 debug.log
+    propagate: False
+
 root:
-  level: DEBUG
+  level: INFO
   handlers: [console, info_file_handler]

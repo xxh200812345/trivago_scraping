@@ -40,22 +40,38 @@ class TaLogin:
 
     def driver_init_chrome(self):
         TaLog().info("正在初始化 Chrome 控制器...")
+        
+        # 1. 打印配置信息
         config = TaConfig().config
         chrome_cfg = config.get("chrome_options", {})
+        TaLog().info(f"读取到 Chrome 配置: {chrome_cfg}")
         
         use_actual_browser = chrome_cfg.get("use_actual_browser", False)
         options = webdriver.ChromeOptions()
 
         if use_actual_browser:
             # --- 模式 A: 启动并接管真实浏览器 ---
+            # 2. 明确打印当前工作目录和 Profile 路径
             current_dir = os.getcwd()
             user_data_path = os.path.join(current_dir, "chrome_profile")
+            TaLog().info(f"当前工作目录 (CWD): {current_dir}")
+            TaLog().info(f"Chrome Profile 预定路径: {user_data_path}")
 
             if not os.path.exists(user_data_path):
+                TaLog().info(f"Profile 路径不存在，正在创建目录...")
                 os.makedirs(user_data_path)
+            else:
+                TaLog().info(f"Profile 路径已存在。")
 
             chrome_path = chrome_cfg.get("chrome_path")
             debug_port = chrome_cfg.get("debug_port", 9222)
+            
+            TaLog().info(f"Chrome 可执行文件路径: {chrome_path}")
+            TaLog().info(f"调试端口: {debug_port}")
+
+            # 3. 针对 WDM 卡死逻辑的建议：
+            # 在调用 ChromeDriverManager 之前，添加如下日志以确认是否进入了 WDM 逻辑
+            TaLog().info("准备通过 webdriver-manager 获取/安装驱动...")
             
             # 1. 构造干净的启动命令
             start_cmd = [
@@ -116,7 +132,7 @@ class TaLogin:
         localization_menu_element = wait_find_element_xpath(selector)
         localization_menu = localization_menu_element.text
         TaLog().info(
-            f"{self.current_task.log_key}localization-menu: {localization_menu}"
+            f"{self.current_task.log_key} {localization_menu}"
         )
 
         # 用货币符号找到对应的货币缩写

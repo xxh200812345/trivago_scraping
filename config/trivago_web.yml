@@ -15,7 +15,7 @@ language: English
 
 loading_wait_time: 3
 
-interval_seconds: 10
+interval_seconds: 20
 
 searchlist: 
   name: searchlist.xlsx
