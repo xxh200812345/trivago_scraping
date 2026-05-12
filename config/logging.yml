@@ -37,8 +37,8 @@ handlers:
 
 loggers:
   trivago_logic:
-    level: ERROR
-    handlers: [console]
+    level: INFO
+    handlers: [console, info_file_handler]
     propagate: False
 
   # 关键添加：显式配置 WDM logger

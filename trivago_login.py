@@ -2,6 +2,7 @@ import time
 import re
 import subprocess
 import os
+import random
 
 from trivago_log import TaLog
 from trivago_task import TaTask
@@ -17,6 +18,8 @@ from selenium.webdriver.support.ui import Select
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.remote import webelement
+
+from selenium_stealth import stealth
 
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.service import Service as ChromeService
@@ -121,6 +124,16 @@ class TaLogin:
         driver.execute_script("window.open('','_blank');")
         driver.switch_to.window(driver.window_handles[0])
 
+        stealth(
+            driver,
+            languages=["en-US", "en"],
+            vendor="Google Inc.",
+            platform="Win32",
+            webgl_vendor="Intel Inc.",
+            renderer="Intel Iris OpenGL Engine",
+            fix_hairline=True,
+        )
+
         return driver
 
     def set_currency(self):
@@ -147,12 +160,12 @@ class TaLogin:
             )
             selector = '//header//*[@data-testid="header-localization-menu"]'
             header_localization_menu_btn = wait_find_element_xpath(selector)
-            actions.move_to_element(header_localization_menu_btn).click().perform()
+            human_click(driver, header_localization_menu_btn)
 
             selector = f'//*[@data-testid="localization-currency-select"]'
             currency_select = wait_find_element_xpath(selector)
             time.sleep(1)
-            actions.move_to_element(currency_select).click().perform()
+            human_click(driver, currency_select)
 
             # 设置成task中的货币
             select = Select(currency_select)
@@ -160,7 +173,7 @@ class TaLogin:
 
             selector = '//dialog//button[@type="submit"]'
             dialog_apply_btn = wait_find_element_xpath(selector)
-            actions.move_to_element(dialog_apply_btn).click().perform()
+            human_click(driver, dialog_apply_btn)
 
             self.before_currency = current_sign
 
@@ -441,7 +454,7 @@ class TaLogin:
         destination_input = wait_find_element_xpath(selector)
 
         # 模拟鼠标移动到div元素并点击
-        actions.move_to_element(destination_input).click().perform()
+        human_click(driver, destination_input)
 
         # 执行键盘输入"Nagoya"
         destination_input.send_keys(self.current_task.cityname)
@@ -450,7 +463,7 @@ class TaLogin:
         selector = '//*[@id="suggestion-list"]//*[@role="listbox"]//li[1]'
         first_button = wait_find_element_xpath(selector)
 
-        actions.move_to_element(first_button).click().perform()
+        human_click(driver, first_button)
         wait_time = 10
         time_count = 0
         current_url = default_url
@@ -544,7 +557,7 @@ def close_calendar():
     try:
         selector = '//button[@data-testid="calendar-button-close"]'
         calendar_button_close = driver.find_element(By.XPATH, selector)
-        actions.move_to_element(calendar_button_close).click().perform()
+        human_click(driver, calendar_button_close)
     except:
         pass
 
@@ -579,6 +592,21 @@ def make_url(temp_url: str, data: dict):
         placeholder = f"{{{key}}}"
         temp_url = temp_url.replace(placeholder, str(value))
     return temp_url
+
+def human_click(driver, element):
+    actions = ActionChains(driver)
+    
+    # 获取元素大小，计算一个随机偏移量（不要每次都点中心）
+    width = element.size['width']
+    height = element.size['height']
+    offset_x = random.randint(-int(width/4), int(width/4))
+    offset_y = random.randint(-int(height/4), int(height/4))
+    
+    # 模拟人类先观察再移动
+    actions.move_to_element_with_offset(element, offset_x, offset_y)
+    actions.pause(random.uniform(0.2, 0.5)) # 模拟点击前的停顿
+    actions.click()
+    actions.perform()
 
 
 def get_accommodation_info(accommodation: webelement.WebElement):
