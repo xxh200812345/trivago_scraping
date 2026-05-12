@@ -65,3 +65,19 @@
 如需修改代码后重新生成 `.exe` 可执行文件，请在终端执行：
 ```bash
 python setup.py build
+```
+
+## 问题解决
+
+### 无法删除文件夹（提示文件夹正在使用）
+
+文件夹无法删除通常是因为 chrome.exe 或 chromedriver.exe 仍在后台运行并锁定着 chrome_profile 目录。
+
+1. 按下 Ctrl + Shift + Esc 打开任务管理器。
+2. 在“详细信息”选项卡中，寻找并选中以下进程，点击“结束任务”：
+   - 所有 chrome.exe
+   - 所有 chromedriver.exe
+
+### 第一次运行卡住报错
+
+点击网页下方setting的OK按钮，重启程序
