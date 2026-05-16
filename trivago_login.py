@@ -44,39 +44,41 @@ class TaLogin:
     def driver_init_chrome(self):
         TaLog().info("正在初始化 Chrome 控制器...")
         
-        # 1. 打印配置信息
+        # 1. 读取并解析配置文件
         config = TaConfig().config
         chrome_cfg = config.get("chrome_options", {})
         TaLog().info(f"读取到 Chrome 配置: {chrome_cfg}")
         
         use_actual_browser = chrome_cfg.get("use_actual_browser", False)
         options = webdriver.ChromeOptions()
+        driver = None
+
+        # --- 统一参数配置 (无论是模式 A 还是模式 B，基础 Prefs 都可以先注入) ---
+        if "prefs" in chrome_cfg:
+            options.add_experimental_option("prefs", chrome_cfg["prefs"])
 
         if use_actual_browser:
-            # --- 模式 A: 启动并接管真实浏览器 ---
-            # 2. 明确打印当前工作目录和 Profile 路径
+            # ==========================================
+            # 模式 A: 启动并接管真实浏览器 (Debugger 模式)
+            # ==========================================
             current_dir = os.getcwd()
             user_data_path = os.path.join(current_dir, "chrome_profile")
             TaLog().info(f"当前工作目录 (CWD): {current_dir}")
             TaLog().info(f"Chrome Profile 预定路径: {user_data_path}")
 
+            # 确保用户数据目录存在
             if not os.path.exists(user_data_path):
-                TaLog().info(f"Profile 路径不存在，正在创建目录...")
+                TaLog().info("Profile 路径不存在，正在创建目录...")
                 os.makedirs(user_data_path)
             else:
-                TaLog().info(f"Profile 路径已存在。")
+                TaLog().info("Profile 路径已存在。")
 
             chrome_path = chrome_cfg.get("chrome_path")
             debug_port = chrome_cfg.get("debug_port", 9222)
-            
             TaLog().info(f"Chrome 可执行文件路径: {chrome_path}")
             TaLog().info(f"调试端口: {debug_port}")
-
-            # 3. 针对 WDM 卡死逻辑的建议：
-            # 在调用 ChromeDriverManager 之前，添加如下日志以确认是否进入了 WDM 逻辑
-            TaLog().info("准备通过 webdriver-manager 获取/安装驱动...")
             
-            # 1. 构造干净的启动命令
+            # 构造命令行启动参数
             start_cmd = [
                 chrome_path,
                 f"--remote-debugging-port={debug_port}",
@@ -85,45 +87,70 @@ class TaLogin:
                 "--no-default-browser-check"
             ]
             
-            # 2. 动态过滤 YAML 里的参数
+            # 动态过滤并追加 YAML 里的额外参数，防止参数冲突
             for arg in chrome_cfg.get("arguments", []):
-                # 排除会导致报错或冲突的参数
                 if not any(x in arg for x in ["--user-data-dir", "--remote-debugging-port", "--ignore-"]):
                     start_cmd.append(arg)
 
-            # 3. 启动物理浏览器
+            # 启动真实的物理浏览器
+            TaLog().info(f"正在通过 Popen 启动物理浏览器，命令: {start_cmd}")
             subprocess.Popen(start_cmd)
-            time.sleep(3) # 稍微多等一会，确保浏览器完全启动
+            time.sleep(3)  # 留出充足时间让浏览器完全初始化
 
-            # 4. 设置 Selenium 实验性选项（用于隐藏自动化指纹）
+            # 核心：设置 Selenium 实验性选项去接管该端口
             options.add_experimental_option("debuggerAddress", f"127.0.0.1:{debug_port}")
             
         else:
-            # --- 模式 B: 原生 Selenium 模拟模式 ---
-            TaLog().info("【标准模式】使用 Selenium 默认配置启动")
+            # ==========================================
+            # 模式 B: 原生 Selenium 独立模拟模式
+            # ==========================================
+            TaLog().info("【标准模式】使用 Selenium 默认配置独立启动")
             for argument in chrome_cfg.get("arguments", []):
                 options.add_argument(argument)
+
+        # ==========================================
+        # 统一 WebDriver 启动逻辑 (核心双保险方案)
+        # ==========================================
+        try:
+            TaLog().info("正在启动 WebDriver (优先使用 Selenium 4 自动托管)...")
+        
+            # 放弃 WDM 联网下载，优先交给 Selenium 4 自动管理（接管模式下直接连 CDP 端口）
+            driver = webdriver.Chrome(options=options)
             
-            if "prefs" in chrome_cfg:
-                options.add_experimental_option("prefs", chrome_cfg["prefs"])
+        except Exception as e:
+            TaLog().warning(f"Selenium 4 自动托管启动失败 (可能处于严格内网或打包组件丢失): {e}")
 
-        # 统一启动 Driver
-        # 注意：接管模式下，webdriver 会直接连接到 9222 端口，而不再额外启动一个新的浏览器
-        driver = webdriver.Chrome(
-            service=ChromeService(ChromeDriverManager().install()), 
-            options=options
-        )
+            # 计算绝对的本地驱动路径：基于当前程序运行目录的 chrome_cfg["driver_path"]["chrome"] -> res/driver/chromedriver.exe
+            # 这样即使用户从外部命令行调用，也能精准定位
+            base_path = os.path.dirname(os.path.abspath(__file__)) if '__file__' in locals() else os.getcwd()
+            
+            driver_path = config.get("driver_path", {})
+            local_driver_path = os.path.normpath(os.path.join(base_path, driver_path["chrome"]))
+            
+            TaLog().info(f"正在尝试降级方案，寻找本地驱动: {local_driver_path}")
+            
+            if os.path.exists(local_driver_path):
+                TaLog().info("成功找到指定目录下的本地驱动，正在加载...")
+                service = ChromeService(executable_path=local_driver_path)
+                driver = webdriver.Chrome(service=service, options=options)
+            else:
+                TaLog().error(f"在指定路径未检测到本地兜底驱动: {local_driver_path}，程序初始化中断。")
+                raise e
 
+        # ==========================================
+        # 统一后置优化与防爬指纹隐藏
+        # ==========================================
+        # 如果是原生模拟模式，注入 CDP 隐藏自动化特征
         if not use_actual_browser:
             driver.execute_cdp_cmd("Page.addScriptToEvaluateOnNewDocument", {
                 "source": "Object.defineProperty(navigator, 'webdriver', {get: () => undefined})"
             })
 
-        # 这里的逻辑建议：接管模式下如果已经开着页面，可能不需要再开空白页
-        # 但如果你习惯这种方式，保持原样即可
+        # 维持你原有的新标签页打开与切换习惯
         driver.execute_script("window.open('','_blank');")
         driver.switch_to.window(driver.window_handles[0])
 
+        # 引入 stealth 库增强防爬混淆
         stealth(
             driver,
             languages=["en-US", "en"],
@@ -134,6 +161,7 @@ class TaLogin:
             fix_hairline=True,
         )
 
+        TaLog().info("Chrome 控制器初始化完成。")
         return driver
 
     def set_currency(self):
@@ -607,7 +635,6 @@ def human_click(driver, element):
     actions.pause(random.uniform(0.2, 0.5)) # 模拟点击前的停顿
     actions.click()
     actions.perform()
-
 
 def get_accommodation_info(accommodation: webelement.WebElement):
     output = {}

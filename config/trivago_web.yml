@@ -24,6 +24,9 @@ searchlist:
 logging_dir: log\
 logging_path: config\logging.yml
 
+driver_path: 
+  chrome: res\driver\chromedriver.exe
+
 output:
   path: output\
   titles:
@@ -81,10 +84,8 @@ edge_options:
     - --accept-language=en
     - --disable-extensions
     - --disable-popup-blocking
-    - --incognito
     - --start-maximized
     - --lang=en-US
-    - --user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36
   prefs:
     first_run_customized: False
     first_run: False
@@ -109,14 +110,8 @@ chrome_options:
     - --accept-language=en
     - --disable-extensions
     - --disable-popup-blocking
-    # 注意：在接管模式下，--incognito (无痕) 可能会导致无法保存登录状态
-    # 如果你想保持登录，建议在接管模式时临时注释掉 --incognito
-    # - --incognito 
     - --start-maximized
     - --lang=en-US
-    - --user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36
-
-  # --- 原有：首选项配置 ---
   prefs:
     profile.default_content_setting_values.notifications: 2
     credentials_enable_service: False
